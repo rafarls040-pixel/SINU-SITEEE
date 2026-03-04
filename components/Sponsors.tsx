@@ -129,7 +129,7 @@ const Sponsors: React.FC = () => {
   };
 
   return (
-    <section id="parceiros" className="py-24 bg-slate-50 relative overflow-hidden select-none">
+    <section id="parceiros" className="py-24 relative overflow-hidden select-none">
       {/* Background patterns with Gold Gradient */}
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-un-dark via-un-accent to-un-blue"></div>
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#D4AF37 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>

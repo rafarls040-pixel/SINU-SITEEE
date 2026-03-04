@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const About: React.FC = () => {
   return (
-    <section id="sobre" className="py-24 bg-slate-50">
+    <section id="sobre" className="py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 
            1. Animação do Container (Imagem de Fundo):

@@ -6,10 +6,12 @@ import Legacy from './components/Legacy';
 import Secretariat from './components/Secretariat';
 import Sponsors from './components/Sponsors';
 import Footer from './components/Footer';
+import BackgroundText from './components/BackgroundText';
 
 const App: React.FC = () => {
   return (
-    <div className="min-h-screen font-sans relative selection:bg-un-accent selection:text-un-dark bg-slate-50">
+    <div className="min-h-screen font-sans relative selection:bg-un-accent selection:text-un-dark">
+      <BackgroundText />
       <Navbar />
       
       <main className="relative z-10">
@@ -27,7 +29,7 @@ const App: React.FC = () => {
           <Sponsors />
           
           {/* Registration CTA Section */}
-          <section id="inscricao" className="py-24 bg-un-dark/90 backdrop-blur-md relative overflow-hidden border-t border-white/10">
+          <section id="inscricao" className="py-24 bg-un-dark/80 backdrop-blur-md relative overflow-hidden border-t border-white/10">
             <div className="absolute inset-0 opacity-10">
                <div className="absolute transform -rotate-45 -left-20 -top-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
                <div className="absolute transform rotate-45 right-0 bottom-0 w-80 h-80 bg-un-accent rounded-full blur-3xl"></div>

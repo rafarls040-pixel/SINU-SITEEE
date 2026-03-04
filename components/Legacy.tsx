@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { History, Newspaper, Clapperboard, Star, ArrowRight, Play, ExternalLink, Image as ImageIcon, ZoomIn, X, Download, FileText, ChevronRight, ChevronLeft, FolderOpen } from 'lucide-react';
+import { History, Newspaper, Clapperboard, Star, ArrowRight, Play, ExternalLink, Image as ImageIcon, X, Download, FileText, ChevronRight, ChevronLeft, FolderOpen } from 'lucide-react';
 
 // --- TIPOS DE DADOS ---
 interface TimelineEvent {
@@ -15,13 +15,6 @@ interface VideoItem {
   duration: string;
   thumbnail: string;
   url: string;
-}
-
-interface GalleryItem {
-  src: string;
-  alt: string;
-  year: string;
-  className?: string;
 }
 
 interface ArchiveDocument {
@@ -134,15 +127,6 @@ const videosData: VideoItem[] = [
     thumbnail: "https://img.youtube.com/vi/qIa3C8dpbY4/hqdefault.jpg",
     url: "https://youtu.be/qIa3C8dpbY4"
   }
-];
-
-const galleryData: GalleryItem[] = [
-  { src: "https://sinu-csl-site.s3.sa-east-1.amazonaws.com/LEGACYY/08d2a5b9-ecb8-4db8-a0a3-d2b0b37543c3.jpg", alt: "", year: "2026" },
-  { src: "https://sinu-csl-site.s3.sa-east-1.amazonaws.com/LEGACYY/3729afae-850c-49bf-89ad-1ac39537517e.jpg", alt: "", year: "2026" },
-  { src: "https://sinu-csl-site.s3.sa-east-1.amazonaws.com/LEGACYY/43557668-b402-43cf-87c6-16417a3e8d74.jpg", alt: "", year: "2026" },
-  { src: "https://sinu-csl-site.s3.sa-east-1.amazonaws.com/LEGACYY/6a8985ec-3398-465b-9164-acc7cf1bb944.jpg", alt: "", year: "2026", className: "object-[center_35%]" },
-  { src: "https://sinu-csl-site.s3.sa-east-1.amazonaws.com/LEGACYY/ffada29f-35a6-440f-adef-26452e4419ad.jpg", alt: "", year: "2026" },
-  { src: "https://sinu-csl-site.s3.sa-east-1.amazonaws.com/LEGACYY/9489d3cd-93a9-41f1-80c7-8b56aea2ce1d.jpg", alt: "", year: "2026" },
 ];
 
 // --- SUB-COMPONENTES ---
@@ -533,74 +517,70 @@ const VideosView: React.FC = () => (
 );
 
 const GalleryView: React.FC = () => {
-  const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
+  const galleries = [
+    {
+      title: "SINU XIX",
+      year: "2025",
+      url: "https://saoluisacojeorg-my.sharepoint.com/:f:/g/personal/bruno_saba_saoluis_org/IgBx431zLemQQ6UqgNpN8ifJASYXD6nkVvCLrVEe01Dcmrc?e=1Dibil",
+      image: "https://sinu-csl-site.s3.sa-east-1.amazonaws.com/LEGACYY/6a8985ec-3398-465b-9164-acc7cf1bb944.jpg"
+    },
+    {
+      title: "SINU XVIII",
+      year: "2024",
+      url: "https://saoluisacojeorg.sharepoint.com/:f:/s/comissao.sinu/IgDlMK549H7zQ64iX1ZraGrdAVsUTGFz4y6jh6ggwVz6OxQ?e=TFIMoU",
+      image: "https://sinu-csl-site.s3.sa-east-1.amazonaws.com/LEGACYY/ffada29f-35a6-440f-adef-26452e4419ad.jpg"
+    }
+  ];
 
   return (
-    <>
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="grid grid-cols-2 md:grid-cols-3 gap-4"
-      >
-        {galleryData.map((item, idx) => (
-          <motion.div
-            key={idx}
-            whileHover={{ scale: 1.02 }}
-            className="relative aspect-square rounded-xl overflow-hidden border border-white/10 cursor-pointer group shadow-lg"
-            onClick={() => setSelectedImage(item)}
-          >
-            <img 
-              src={item.src} 
-              alt={item.alt}
-              className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${item.className || ''}`}
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-               <ZoomIn className="w-8 h-8 text-white" />
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+    >
+      {galleries.map((gallery, idx) => (
+        <motion.a
+          key={idx}
+          href={gallery.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          whileHover={{ scale: 1.02, y: -5 }}
+          className="relative aspect-video rounded-2xl overflow-hidden border border-white/10 group shadow-2xl cursor-pointer"
+        >
+          {/* Background Image */}
+          <img 
+            src={gallery.image} 
+            alt={gallery.title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-80"
+          />
+          
+          {/* Overlay Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-un-dark via-un-dark/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+          
+          {/* Content */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+            <div className="mb-4 p-3 rounded-full bg-un-accent/20 text-un-accent border border-un-accent/30 transform group-hover:scale-110 transition-transform">
+              <ImageIcon className="w-8 h-8" />
             </div>
-            <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-               {item.alt && <span className="text-white text-sm font-bold block">{item.alt}</span>}
-               <span className="text-un-accent text-xs">{item.year}</span>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      {/* Mini Lightbox */}
-      <AnimatePresence>
-        {selectedImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4"
-            onClick={() => setSelectedImage(null)}
-          >
-            <button 
-              className="absolute top-4 right-4 text-white hover:text-un-accent p-2"
-              onClick={() => setSelectedImage(null)}
-            >
-              <X className="w-8 h-8" />
-            </button>
+            <h4 className="text-3xl font-serif font-bold text-white mb-1 group-hover:text-un-accent transition-colors">
+              {gallery.title}
+            </h4>
+            <p className="text-un-accent font-bold tracking-widest text-sm uppercase opacity-80">
+              Edição {gallery.year}
+            </p>
             
-            <div className="max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
-              <motion.img 
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                src={selectedImage.src}
-                alt={selectedImage.alt}
-                className="w-full h-auto max-h-[80vh] object-contain rounded-lg shadow-2xl border border-white/10"
-              />
-              <div className="mt-4 text-center">
-                 {selectedImage.alt && <h4 className="text-white text-xl font-serif">{selectedImage.alt}</h4>}
-                 <p className="text-un-accent">{selectedImage.year}</p>
-              </div>
+            <div className="mt-6 flex items-center gap-2 text-white/60 text-xs font-bold uppercase tracking-widest group-hover:text-white transition-colors">
+              <span>Ver Álbum Completo</span>
+              <ExternalLink className="w-4 h-4" />
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+          </div>
+
+          {/* Border Glow */}
+          <div className="absolute inset-0 border-2 border-un-accent/0 group-hover:border-un-accent/30 transition-colors rounded-2xl"></div>
+        </motion.a>
+      ))}
+    </motion.div>
   );
 };
 
