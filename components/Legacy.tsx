@@ -601,9 +601,9 @@ const Legacy: React.FC = () => {
         <div className="text-center mb-12">
           <div className="mb-8 hover:scale-105 transition-transform duration-300 inline-block">
              <img 
-              src="https://sinu-csl-site.s3.sa-east-1.amazonaws.com/Logo+Preto+Sem+fundo.png" 
+              src="https://sinu-csl-site.s3.sa-east-1.amazonaws.com/BRAINSTORMING+SINU+(2).png" 
               alt="SINU Legacy Logo" 
-              className="h-32 w-auto object-contain brightness-0 invert"
+              className="h-32 w-auto object-contain"
             />
           </div>
           <h2 className="text-un-accent font-bold tracking-widest uppercase text-sm mb-3">Nossa História & Mídia</h2>

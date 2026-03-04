@@ -3,8 +3,6 @@ import { Mail, MapPin, Instagram, Linkedin, Youtube } from 'lucide-react';
 import SinuLogo from './SinuLogo';
 
 const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
-
   return (
     <footer className="bg-un-dark/95 backdrop-blur-md text-white pt-16 pb-8 border-t border-un-accent/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -26,7 +24,7 @@ const Footer: React.FC = () => {
               {/* Logo SINU */}
               <div className="flex items-center space-x-3">
                 <div className="bg-white/5 p-2 rounded-full border border-white/10">
-                  <SinuLogo className="h-10 w-10" />
+                  <SinuLogo className="h-14 w-14" />
                 </div>
                 <span className="text-2xl font-serif font-bold tracking-tight">SINU <span className="text-un-accent">XX</span></span>
               </div>
@@ -34,10 +32,10 @@ const Footer: React.FC = () => {
             
             {/* Social Media Links */}
             <div className="flex space-x-4 mt-6">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-white/10 p-2.5 rounded-full hover:bg-un-accent hover:text-un-dark transition-all duration-300 group" aria-label="Instagram">
+              <a href="https://www.instagram.com/sinucsl/" target="_blank" rel="noopener noreferrer" className="bg-white/10 p-2.5 rounded-full hover:bg-un-accent hover:text-un-dark transition-all duration-300 group" aria-label="Instagram">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="bg-white/10 p-2.5 rounded-full hover:bg-un-accent hover:text-un-dark transition-all duration-300 group" aria-label="LinkedIn">
+              <a href="https://www.linkedin.com/company/111723413/" target="_blank" rel="noopener noreferrer" className="bg-white/10 p-2.5 rounded-full hover:bg-un-accent hover:text-un-dark transition-all duration-300 group" aria-label="LinkedIn">
                 <Linkedin className="h-5 w-5" />
               </a>
               <a href="https://www.youtube.com/@sinucsl" target="_blank" rel="noopener noreferrer" className="bg-white/10 p-2.5 rounded-full hover:bg-un-accent hover:text-un-dark transition-all duration-300 group" aria-label="YouTube">
@@ -73,14 +71,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-white/40">
-          <p>&copy; {currentYear} SINU. Todos os direitos reservados.</p>
-          <div className="flex gap-6 mt-4 md:mt-0">
-            <a href="#" className="hover:text-un-accent transition-colors">Política de Privacidade</a>
-            <a href="#" className="hover:text-un-accent transition-colors">Termos de Uso</a>
-          </div>
-        </div>
+
       </div>
     </footer>
   );
