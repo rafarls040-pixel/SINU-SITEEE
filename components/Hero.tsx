@@ -34,7 +34,6 @@ const Hero: React.FC = () => {
       </div>
 
       <div className="absolute inset-0 z-0 pointer-events-none">
-
         {/* Geometric Lines */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-slate-100 to-transparent opacity-50"></div>
         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-px bg-gradient-to-r from-transparent via-slate-100 to-transparent opacity-50"></div>
@@ -80,8 +79,8 @@ const Hero: React.FC = () => {
           }}
           className="mb-4"
         >
-          <div className="relative mix-blend-multiply">
-            <SinuLogo className="w-72 h-72 md:w-[28rem] md:h-[28rem] relative z-10 drop-shadow-[0_15px_50px_rgba(65,143,222,0.2)]" />
+          <div className="relative">
+            <SinuLogo className="w-72 h-72 md:w-[28rem] md:h-[28rem] relative z-10 drop-shadow-[0_15px_50px_rgba(65,143,222,0.1)]" />
           </div>
         </motion.div>
 
@@ -104,7 +103,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
-            className="text-[#0A1A30] text-8xl md:text-[10rem] lg:text-[12rem] font-serif font-black tracking-tighter leading-[0.8]"
+            className="text-[#03005c] text-8xl md:text-[10rem] lg:text-[12rem] font-serif font-black tracking-tighter leading-[0.8]"
           >
             SINU <span className="text-un-accent font-light italic">XX</span>
           </motion.h1>
@@ -113,10 +112,22 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 1 }}
-            className="mt-10 text-un-blue font-sans font-bold text-xs md:text-sm tracking-[0.5em] uppercase max-w-3xl mx-auto"
+            className="mt-10 text-un-blue font-sans font-bold text-[10px] md:text-xs tracking-[0.5em] uppercase max-w-3xl mx-auto"
           >
             Simulação Interna das Nações Unidas
           </motion.p>
+
+          {/* Bottom Center Dot from Screenshot */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 1 }}
+            className="mt-8 flex justify-center"
+          >
+            <div className="w-4 h-4 rounded-full border border-slate-200 flex items-center justify-center">
+              <div className="w-1 h-1 bg-un-blue rounded-full"></div>
+            </div>
+          </motion.div>
         </div>
       </div>
 

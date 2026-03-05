@@ -74,6 +74,16 @@ const teams: Team[] = [
     ]
   },
   {
+    id: 'crise',
+    title: 'Secretaria de Crise',
+    icon: AlertCircle,
+    description: 'A secretaria de crise é responsável pela criação e gestão de situações emergenciais e dinâmicas que desafiam os delegados durante o evento. Seu trabalho é essencial para garantir o realismo e a imprevisibilidade das discussões, exigindo dos participantes soluções rápidas e estratégicas diante de novos cenários.',
+    members: [
+      { name: 'Bethânia Labate Mellis', shift: 'Integral', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Bethania.png' },
+      { name: 'Maria Eduarda Seixas Ferreira', shift: 'Noturno', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Maria.png' }
+    ]
+  },
+  {
     id: 'criativa',
     title: 'Secretaria Criativa',
     icon: Palette,
@@ -84,20 +94,10 @@ const teams: Team[] = [
       { name: 'Valentina Maria Colombo Bagnolesi', shift: 'Integral', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Valentina.png' },
       { name: 'Vinícius Porfirio de Souza', shift: 'Noturno', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Vinicios.png' }
     ]
-  },
-  {
-    id: 'crise',
-    title: 'Secretaria de Crise',
-    icon: AlertCircle,
-    description: 'A secretaria de crise é responsável pela criação e gestão de situações emergenciais e dinâmicas que desafiam os delegados durante o evento. Seu trabalho é essencial para garantir o realismo e a imprevisibilidade das discussões, exigindo dos participantes soluções rápidas e estratégicas diante de novos cenários.',
-    members: [
-      { name: 'Bethânia Labate Mellis', shift: 'Integral', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Bethania.png' },
-      { name: 'Maria Eduarda Seixas Ferreira', shift: 'Noturno', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Maria.png' }
-    ]
   }
 ];
 
-const MemberCarousel: React.FC<{ members: Member[] }> = ({ members }) => {
+const MemberCarousel: React.FC<{ members: Member[], isDark?: boolean }> = ({ members, isDark }) => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
   React.useEffect(() => {
@@ -121,23 +121,23 @@ const MemberCarousel: React.FC<{ members: Member[] }> = ({ members }) => {
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="w-full flex flex-col items-center p-4"
         >
-          <div className="w-full max-w-[210px] aspect-square rounded-2xl overflow-hidden mb-6 shadow-2xl relative group/member bg-white">
+          <div className="w-full max-w-[210px] aspect-square overflow-hidden mb-6 relative group/member bg-white/70 rounded-2xl">
             {member.image ? (
-              <img src={member.image} alt={member.name} className="w-full h-full object-cover mix-blend-multiply" referrerPolicy="no-referrer" />
+              <img src={member.image} alt={member.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             ) : (
-              <div className="w-full h-full bg-un-light flex items-center justify-center">
-                <User className="w-16 h-16 text-un-accent/60" />
+              <div className={`w-full h-full ${isDark ? 'bg-white/10' : 'bg-un-light'} flex items-center justify-center`}>
+                <User className={`w-16 h-16 ${isDark ? 'text-white/40' : 'text-un-accent/60'}`} />
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-un-dark/40 to-transparent opacity-0 group-hover/member:opacity-100 transition-opacity duration-500"></div>
+            {/* Removed hover overlay */}
           </div>
           
           <div className="text-center w-full mt-auto pt-2">
-            <p className="text-xl font-serif font-bold text-slate-900 leading-tight mb-3 px-1 tracking-tight">
+            <p className={`text-xl font-serif font-bold leading-tight mb-3 px-1 tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
               {member.name}
             </p>
             <div className="flex justify-center">
-              <span className="text-[10px] text-un-dark font-bold uppercase tracking-[0.2em] bg-un-accent/15 px-4 py-1.5 rounded-full border border-un-accent/10">
+              <span className={`text-[10px] font-bold uppercase tracking-[0.2em] px-4 py-1.5 rounded-full border ${isDark ? 'text-white bg-white/10 border-white/20' : 'text-un-dark bg-un-accent/15 border-un-accent/10'}`}>
                 {member.shift}
               </span>
             </div>
@@ -153,7 +153,7 @@ const MemberCarousel: React.FC<{ members: Member[] }> = ({ members }) => {
               key={idx}
               onClick={() => setCurrentIndex(idx)}
               className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                idx === currentIndex ? 'bg-un-accent w-4' : 'bg-slate-300'
+                idx === currentIndex ? (isDark ? 'bg-un-accent w-4' : 'bg-un-accent w-4') : (isDark ? 'bg-white/20' : 'bg-slate-300')
               }`}
             />
           ))}
@@ -194,31 +194,31 @@ const Secretariat: React.FC = () => {
               viewport={{ once: true }}
               className="max-w-4xl mx-auto"
             >
-              <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-t-4 border-un-accent relative">
+              <div className="bg-[#03005c]/90 rounded-2xl overflow-hidden border-t-4 border-un-accent relative backdrop-blur-sm">
                 {/* Gold glow effect at top */}
                 <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-un-accent/5 to-transparent pointer-events-none"></div>
 
                 <div className="p-8 md:p-10 relative z-10">
                   <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-6">
-                    <div className="p-4 bg-un-accent/10 rounded-full text-un-accent shrink-0 border border-un-accent/20">
+                    <div className="p-4 bg-white/10 rounded-full text-un-accent shrink-0 border border-white/20">
                       <generalTeam.icon className="w-8 h-8" />
                     </div>
                     <div>
-                      <h4 className="text-2xl font-serif font-bold text-slate-900">{generalTeam.title}</h4>
-                      <p className="text-slate-500 mt-1 text-justify">{generalTeam.description}</p>
+                      <h4 className="text-2xl font-serif font-bold text-white">{generalTeam.title}</h4>
+                      <p className="text-white/80 mt-1 text-justify">{generalTeam.description}</p>
                     </div>
                   </div>
 
-                  <div className="bg-slate-50/80 rounded-xl p-6 border border-slate-100">
+                  <div className="bg-transparent rounded-xl p-6 border-transparent">
                     <h5 className="text-xs font-bold text-un-accent uppercase tracking-widest mb-4 flex items-center gap-2">
                        <span className="w-2 h-2 rounded-full bg-un-accent"></span> Membros
                     </h5>
                     <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                       {generalTeam.members.map((member, idx) => (
-                        <div key={idx} className="flex flex-col items-center gap-6 p-6 rounded-[2rem] bg-white/40 backdrop-blur-md border border-white/60 shadow-xl hover:shadow-2xl transition-all duration-700 group/card">
-                          <div className="w-full max-w-[280px] mx-auto aspect-[4/5] rounded-2xl overflow-hidden shrink-0 shadow-2xl group-hover/card:scale-[1.02] transition-all duration-700 bg-white">
+                        <div key={idx} className="flex flex-col items-center gap-6 p-6 rounded-[2rem] bg-transparent transition-all duration-700 group/card">
+                          <div className="w-full max-w-[280px] mx-auto aspect-square overflow-hidden shrink-0 group-hover/card:scale-[1.02] transition-all duration-700 bg-white/70 rounded-2xl">
                             {member.image ? (
-                              <img src={member.image} alt={member.name} className="w-full h-full object-cover mix-blend-multiply" referrerPolicy="no-referrer" />
+                              <img src={member.image} alt={member.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                             ) : (
                               <div className="w-full h-full bg-un-dark text-white flex items-center justify-center text-7xl font-bold">
                                 {member.name.charAt(0)}
@@ -231,13 +231,13 @@ const Secretariat: React.FC = () => {
                               <h5 className="text-un-accent text-[10px] font-bold uppercase tracking-[0.4em] opacity-90">Secretaria Geral</h5>
                               <span className="h-px w-6 bg-un-accent/40"></span>
                             </div>
-                            <h3 className="font-serif font-bold text-slate-900 text-3xl md:text-4xl group-hover/card:text-un-dark transition-all duration-500 leading-tight tracking-tight mb-6">
+                            <h3 className="font-serif font-bold text-white text-3xl md:text-4xl group-hover/card:text-un-accent transition-all duration-500 leading-tight tracking-tight mb-6">
                               {member.name}
                             </h3>
                             <div className="flex justify-center">
-                              <div className="flex items-center gap-2 bg-un-accent/10 px-6 py-2 rounded-full border border-un-accent/20">
+                              <div className="flex items-center gap-2 bg-white/10 px-6 py-2 rounded-full border border-white/20">
                                 <span className="w-1.5 h-1.5 rounded-full bg-un-accent animate-pulse"></span>
-                                <span className="text-[10px] text-un-dark font-bold tracking-[0.2em] uppercase">
+                                <span className="text-[10px] text-white font-bold tracking-[0.2em] uppercase">
                                   {member.shift}
                                 </span>
                               </div>
@@ -254,35 +254,41 @@ const Secretariat: React.FC = () => {
 
           {/* Other Secretariats Grid - Alterado para Flexbox para centralizar itens "órfãos" */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {otherTeams.map((team, idx) => (
-              <motion.div
-                key={team.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1, duration: 0.5 }}
-                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border border-slate-100 hover:border-un-accent/30 group flex flex-col h-full"
-              >
-                <div className="p-6 flex flex-col h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="p-3 bg-un-light/50 rounded-lg text-un-blue group-hover:bg-un-accent group-hover:text-un-dark transition-all duration-300 shadow-sm">
-                      <team.icon className="w-6 h-6" />
-                    </div>
-                    <h4 className="text-lg font-bold text-slate-900 leading-tight group-hover:text-un-dark transition-colors">{team.title}</h4>
-                  </div>
-                  
-                  <div className="min-h-[100px] mb-6">
-                    <p className="text-slate-600 text-sm leading-relaxed text-justify">
-                      {team.description}
-                    </p>
-                  </div>
+            {otherTeams.map((team, idx) => {
+              const isDark = true; // All cards blue as requested
+              return (
+                <motion.div
+                  key={team.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1, duration: 0.5 }}
+                  className="bg-[#03005c]/90 rounded-2xl overflow-hidden border-t-4 border-un-accent relative backdrop-blur-sm transition-all duration-300 group flex flex-col h-full"
+                >
+                  {/* Gold glow effect at top */}
+                  <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-un-accent/5 to-transparent pointer-events-none"></div>
 
-                  <div className="mt-auto">
-                    <MemberCarousel members={team.members} />
+                  <div className="p-6 flex flex-col h-full relative z-10">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className={`p-3 ${isDark ? 'bg-white/10 text-un-accent' : 'bg-un-light/50 text-un-blue'} rounded-lg group-hover:bg-un-accent group-hover:text-un-dark transition-all duration-300 shadow-sm`}>
+                        <team.icon className="w-6 h-6" />
+                      </div>
+                      <h4 className={`text-lg font-bold leading-tight transition-colors ${isDark ? 'text-white group-hover:text-un-accent' : 'text-slate-900 group-hover:text-un-dark'}`}>{team.title}</h4>
+                    </div>
+                    
+                    <div className="min-h-[100px] mb-6">
+                      <p className={`text-sm leading-relaxed text-justify ${isDark ? 'text-white/80' : 'text-slate-600'}`}>
+                        {team.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-auto">
+                      <MemberCarousel members={team.members} isDark={isDark} />
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>
