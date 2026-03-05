@@ -7,7 +7,7 @@ const BackgroundText: React.FC = () => {
   const repeatedText = Array(20).fill(text).join("");
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none opacity-[0.20] flex items-center justify-center">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none opacity-[0.02] flex items-center justify-center">
       <div className="flex justify-around w-[200vw] h-[200vh] rotate-[-45deg] shrink-0">
         {Array.from({ length: columns }).map((_, i) => (
           <div key={i} className="relative h-full">

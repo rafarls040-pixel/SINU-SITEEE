@@ -80,7 +80,7 @@ const Hero: React.FC = () => {
           }}
           className="mb-4"
         >
-          <div className="relative">
+          <div className="relative mix-blend-multiply">
             <SinuLogo className="w-72 h-72 md:w-[28rem] md:h-[28rem] relative z-10 drop-shadow-[0_15px_50px_rgba(65,143,222,0.2)]" />
           </div>
         </motion.div>
