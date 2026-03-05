@@ -15,17 +15,14 @@ const Footer: React.FC = () => {
               <img 
                 src="https://static.saoluis.org/wp-content/uploads/2020/04/colegio-saoluis.png" 
                 alt="Colégio São Luís" 
-                className="h-8 w-auto brightness-0 invert opacity-90"
+                className="h-8 w-auto"
               />
               
               {/* Divider */}
               <div className="h-8 w-px bg-white/20"></div>
 
-              {/* Logo SINU */}
               <div className="flex items-center space-x-3">
-                <div className="bg-white/5 p-2 rounded-full border border-white/10">
-                  <SinuLogo className="h-14 w-14" />
-                </div>
+                <SinuLogo className="h-20 w-20" />
                 <span className="text-2xl font-serif font-bold tracking-tight">SINU <span className="text-un-accent">XX</span></span>
               </div>
             </div>

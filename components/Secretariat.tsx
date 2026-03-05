@@ -58,7 +58,7 @@ const teams: Team[] = [
     members: [
       { name: 'Beatriz Malta Stirnberg', shift: 'Integral', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Beatriz.png' },
       { name: 'Erick Henrique da Silva Andrade', shift: 'Noturno', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Erick.png' },
-      { name: 'Lucas Aranha Ferraz', shift: 'Integral', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/lucas.png' },
+      { name: 'Lucas Aranha Ferraz', shift: 'Integral', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Lucas.png' },
       { name: 'Mario Arnaldo Muniz Kozilek', shift: 'Noturno', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Mario.png' }
     ]
   },
@@ -79,7 +79,7 @@ const teams: Team[] = [
     icon: Palette,
     description: 'A secretaria criativa é responsável pela identidade visual da SINU, definindo cores, padrões e modelos de todos os materiais utilizados antes e durante o evento. Além disso, atua de forma integrada com as demais secretarias, contribuindo para a inovação nos processos de preparação do evento.',
     members: [
-      { name: 'Henrique do Prado Valladares Seixas Maia', shift: 'Integral', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Henrique+Maia.png' },
+      { name: 'Henrique do Prado Valladares Seixas Maia', shift: 'Integral', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Henrique.png' },
       { name: 'Thomas Henry de Sousa Oliveira', shift: 'Noturno', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Thomas.png' },
       { name: 'Valentina Maria Colombo Bagnolesi', shift: 'Integral', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Valentina.png' },
       { name: 'Vinícius Porfirio de Souza', shift: 'Noturno', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Vinicios.png' }
@@ -91,8 +91,8 @@ const teams: Team[] = [
     icon: AlertCircle,
     description: 'A secretaria de crise é responsável pela criação e gestão de situações emergenciais e dinâmicas que desafiam os delegados durante o evento. Seu trabalho é essencial para garantir o realismo e a imprevisibilidade das discussões, exigindo dos participantes soluções rápidas e estratégicas diante de novos cenários.',
     members: [
-      { name: 'Bethânia Labate Mellis', shift: 'Integral', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Beth%C3%A2nia.png' },
-      { name: 'Maria Eduarda Seixas Ferreira', shift: 'Noturno', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Maria+Eduarda.png' }
+      { name: 'Bethânia Labate Mellis', shift: 'Integral', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Bethania.png' },
+      { name: 'Maria Eduarda Seixas Ferreira', shift: 'Noturno', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Maria.png' }
     ]
   }
 ];
@@ -111,7 +111,7 @@ const MemberCarousel: React.FC<{ members: Member[] }> = ({ members }) => {
   const member = members[currentIndex];
 
   return (
-    <div className="relative w-full h-[450px] flex flex-col items-center justify-center overflow-hidden">
+    <div className="relative w-full h-[400px] flex flex-col items-center justify-center overflow-hidden">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
@@ -121,7 +121,7 @@ const MemberCarousel: React.FC<{ members: Member[] }> = ({ members }) => {
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="w-full flex flex-col items-center p-4"
         >
-          <div className="w-full max-w-[240px] aspect-[3/4] rounded-2xl overflow-hidden mb-6 shadow-2xl relative group/member bg-white">
+          <div className="w-full max-w-[210px] aspect-square rounded-2xl overflow-hidden mb-6 shadow-2xl relative group/member bg-white">
             {member.image ? (
               <img src={member.image} alt={member.name} className="w-full h-full object-cover mix-blend-multiply" referrerPolicy="no-referrer" />
             ) : (
@@ -215,8 +215,8 @@ const Secretariat: React.FC = () => {
                     </h5>
                     <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                       {generalTeam.members.map((member, idx) => (
-                        <div key={idx} className="flex flex-col items-center gap-8 p-8 rounded-[2rem] bg-white/40 backdrop-blur-md border border-white/60 shadow-xl hover:shadow-2xl transition-all duration-700 group/card">
-                          <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden shrink-0 shadow-2xl group-hover/card:scale-[1.02] transition-all duration-700 bg-white">
+                        <div key={idx} className="flex flex-col items-center gap-6 p-6 rounded-[2rem] bg-white/40 backdrop-blur-md border border-white/60 shadow-xl hover:shadow-2xl transition-all duration-700 group/card">
+                          <div className="w-full max-w-[280px] mx-auto aspect-[4/5] rounded-2xl overflow-hidden shrink-0 shadow-2xl group-hover/card:scale-[1.02] transition-all duration-700 bg-white">
                             {member.image ? (
                               <img src={member.image} alt={member.name} className="w-full h-full object-cover mix-blend-multiply" referrerPolicy="no-referrer" />
                             ) : (
@@ -253,7 +253,7 @@ const Secretariat: React.FC = () => {
           )}
 
           {/* Other Secretariats Grid - Alterado para Flexbox para centralizar itens "órfãos" */}
-          <div className="flex flex-wrap justify-center gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {otherTeams.map((team, idx) => (
               <motion.div
                 key={team.id}
@@ -261,9 +261,9 @@ const Secretariat: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
-                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border border-slate-100 hover:border-un-accent/30 group flex flex-col h-full w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.33%-1.5rem)]"
+                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border border-slate-100 hover:border-un-accent/30 group flex flex-col h-full"
               >
-                <div className="p-6 flex-grow">
+                <div className="p-6 flex flex-col h-full">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="p-3 bg-un-light/50 rounded-lg text-un-blue group-hover:bg-un-accent group-hover:text-un-dark transition-all duration-300 shadow-sm">
                       <team.icon className="w-6 h-6" />
@@ -271,11 +271,15 @@ const Secretariat: React.FC = () => {
                     <h4 className="text-lg font-bold text-slate-900 leading-tight group-hover:text-un-dark transition-colors">{team.title}</h4>
                   </div>
                   
-                  <p className="text-slate-600 text-sm mb-6 leading-relaxed text-justify">
-                    {team.description}
-                  </p>
+                  <div className="min-h-[100px] mb-6">
+                    <p className="text-slate-600 text-sm leading-relaxed text-justify">
+                      {team.description}
+                    </p>
+                  </div>
 
-                  <MemberCarousel members={team.members} />
+                  <div className="mt-auto">
+                    <MemberCarousel members={team.members} />
+                  </div>
                 </div>
               </motion.div>
             ))}
