@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import SinuLogo from './SinuLogo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { History, Newspaper, Clapperboard, Star, ArrowRight, Play, ExternalLink, Image as ImageIcon, X, Download, FileText, ChevronRight, ChevronLeft, FolderOpen } from 'lucide-react';
 
@@ -600,11 +601,7 @@ const Legacy: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="mb-8 hover:scale-105 transition-transform duration-300 inline-block">
-             <img 
-              src="https://sinu-csl-site.s3.sa-east-1.amazonaws.com/BRAINSTORMING+SINU+(2).png" 
-              alt="SINU Legacy Logo" 
-              className="h-32 w-auto object-contain"
-            />
+             <SinuLogo className="h-32 w-auto object-contain" />
           </div>
           <h2 className="text-un-accent font-bold tracking-widest uppercase text-sm mb-3">Nossa História & Mídia</h2>
           <h3 className="text-4xl md:text-5xl font-serif font-bold text-white drop-shadow-xl">
