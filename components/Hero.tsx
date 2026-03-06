@@ -24,10 +24,10 @@ const Hero: React.FC = () => {
           }}
           className="flex whitespace-nowrap"
         >
-          <h2 className="text-[30vw] font-serif font-black text-slate-900 leading-none pr-20">
+          <h2 className="text-[30vw] font-serif font-black text-slate-900 leading-none pr-20 opacity-50">
             SINU XX SINU XX SINU XX SINU XX
           </h2>
-          <h2 className="text-[30vw] font-serif font-black text-slate-900 leading-none pr-20">
+          <h2 className="text-[30vw] font-serif font-black text-slate-900 leading-none pr-20 opacity-50">
             SINU XX SINU XX SINU XX SINU XX
           </h2>
         </motion.div>
@@ -80,7 +80,7 @@ const Hero: React.FC = () => {
           className="mb-4"
         >
           <div className="relative">
-            <SinuLogo className="w-72 h-72 md:w-[28rem] md:h-[28rem] relative z-10 drop-shadow-[0_15px_50px_rgba(65,143,222,0.1)]" />
+            <SinuLogo className="w-48 h-48 sm:w-64 sm:h-64 md:w-[28rem] md:h-[28rem] relative z-10 drop-shadow-[0_15px_50px_rgba(65,143,222,0.1)]" />
           </div>
         </motion.div>
 
@@ -103,7 +103,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
-            className="text-[#03005c] text-8xl md:text-[10rem] lg:text-[12rem] font-serif font-black tracking-tighter leading-[0.8]"
+            className="text-[#03005c] text-6xl sm:text-8xl md:text-[10rem] lg:text-[12rem] font-serif font-black tracking-tighter leading-[0.9] md:leading-[0.8]"
           >
             SINU <span className="text-un-accent font-light italic">XX</span>
           </motion.h1>

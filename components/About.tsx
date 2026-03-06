@@ -10,7 +10,7 @@ const About: React.FC = () => {
            Aparece assim que o usuário rola até a seção.
         */}
         <motion.div 
-          className="relative rounded-3xl shadow-xl overflow-hidden border border-slate-100 min-h-[600px] flex items-center"
+          className="relative rounded-3xl shadow-xl overflow-hidden border border-slate-100 min-h-[500px] md:min-h-[600px] flex items-center"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -30,19 +30,19 @@ const About: React.FC = () => {
              Tem um delay de 1.0s (delay: 1) para permitir que a imagem seja vista primeiro.
           */}
           <motion.div 
-            className="relative z-10 w-full lg:w-7/12 p-4 sm:p-8 md:p-12 lg:p-16 mx-auto lg:ml-0"
+            className="relative z-10 w-full lg:w-7/12 p-6 sm:p-8 md:p-12 lg:p-16 mx-auto lg:ml-0"
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 1.0, duration: 0.8, ease: "easeOut" }}
           >
-            <div className="bg-white/40 backdrop-blur-2xl border border-white/50 p-6 sm:p-10 rounded-3xl shadow-2xl">
-              <h2 className="text-un-accent font-bold tracking-wide uppercase text-[10px] sm:text-xs mb-4 drop-shadow-sm border-l-4 border-un-accent pl-3">O que é a SINU?</h2>
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-6 leading-tight drop-shadow-sm">
+            <div className="bg-white/40 backdrop-blur-2xl border border-white/50 p-6 sm:p-8 md:p-10 rounded-3xl shadow-2xl">
+              <h2 className="text-un-accent font-bold tracking-wide uppercase text-[10px] sm:text-xs mb-3 md:mb-4 drop-shadow-sm border-l-4 border-un-accent pl-3">O que é a SINU?</h2>
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-4 md:mb-6 leading-tight drop-shadow-sm">
                 Mais que um evento, uma experiência transformadora.
               </h3>
               
-              <div className="space-y-4 sm:space-y-6 text-slate-900 text-base sm:text-lg leading-relaxed text-justify font-medium">
+              <div className="space-y-3 sm:space-y-4 md:space-y-6 text-slate-900 text-sm sm:text-base md:text-lg leading-relaxed text-justify font-medium">
                 <p className="drop-shadow-sm">
                   A Simulação Interna das Nações Unidas (SINU) é um tradicional evento acadêmico de debates sobre temas atuais da geopolítica brasileira e internacional, organizado pelos estudantes do Colégio São Luís e, em 2026, chega a sua vigésima edição. Nele, os participantes representam delegações ou deputados, instigando o pensamento crítico e oratória por meio de problemáticas, crises e resoluções acerca dos maiores desafios contemporâneos.
                 </p>

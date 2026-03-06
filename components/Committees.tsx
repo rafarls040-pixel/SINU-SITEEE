@@ -222,7 +222,7 @@ const Committees: React.FC = () => {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 xl:gap-10">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 xl:gap-10">
           {committeesList.map((committee, idx) => (
             <CommitteeCard key={committee.id} committee={committee} index={idx} />
           ))}

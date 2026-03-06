@@ -111,7 +111,7 @@ const MemberCarousel: React.FC<{ members: Member[], isDark?: boolean }> = ({ mem
   const member = members[currentIndex];
 
   return (
-    <div className="relative w-full h-[400px] flex flex-col items-center justify-center overflow-hidden">
+    <div className="relative w-full h-[350px] md:h-[400px] flex flex-col items-center justify-center overflow-hidden">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
@@ -133,7 +133,7 @@ const MemberCarousel: React.FC<{ members: Member[], isDark?: boolean }> = ({ mem
           </div>
           
           <div className="text-center w-full mt-auto pt-2">
-            <p className={`text-xl font-serif font-bold leading-tight mb-3 px-1 tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <p className={`text-lg md:text-xl font-serif font-bold leading-tight mb-2 md:mb-3 px-1 tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
               {member.name}
             </p>
             <div className="flex justify-center">
@@ -231,7 +231,7 @@ const Secretariat: React.FC = () => {
                               <h5 className="text-un-accent text-[10px] font-bold uppercase tracking-[0.4em] opacity-90">Secretaria Geral</h5>
                               <span className="h-px w-6 bg-un-accent/40"></span>
                             </div>
-                            <h3 className="font-serif font-bold text-white text-3xl md:text-4xl group-hover/card:text-un-accent transition-all duration-500 leading-tight tracking-tight mb-6">
+                            <h3 className="font-serif font-bold text-white text-2xl sm:text-3xl md:text-4xl group-hover/card:text-un-accent transition-all duration-500 leading-tight tracking-tight mb-4 md:mb-6">
                               {member.name}
                             </h3>
                             <div className="flex justify-center">
