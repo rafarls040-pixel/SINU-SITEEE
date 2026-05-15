@@ -157,7 +157,7 @@ const CDH: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none z-10"></div>
                   <iframe 
                     className="absolute top-0 left-0 w-full h-full z-0"
-                    src="https://www.youtube.com/embed/eugOEz2SusU"
+                    src="https://www.youtube.com/embed/JQpdQAYwYh8"
                     title="Vídeo de Apresentação do Tema"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -184,7 +184,7 @@ const CDH: React.FC = () => {
                 <iframe 
                   className="absolute top-0 left-0 w-full h-full"
                   src="https://www.youtube.com/embed/eugOEz2SusU"
-                  title="Vídeo Tema CDH"
+                  title="Vídeo Apresentação CDH"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>

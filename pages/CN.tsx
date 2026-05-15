@@ -183,7 +183,7 @@ const CN: React.FC = () => {
               <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-slate-900">
                 <iframe 
                   className="absolute top-0 left-0 w-full h-full"
-                  src="https://www.youtube.com/embed/qIa3C8dpbY4"
+                  src="https://www.youtube.com/embed/RDGZUmZP0vA"
                   title="Vídeo Tema CN"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
