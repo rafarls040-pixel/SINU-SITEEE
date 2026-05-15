@@ -4,13 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { History, Newspaper, Clapperboard, Star, ArrowRight, Play, ExternalLink, Image as ImageIcon, X, Download, FileText, ChevronRight, ChevronLeft, FolderOpen } from 'lucide-react';
 
 // --- TIPOS DE DADOS ---
-interface TimelineEvent {
-  title: string;
-  year: string;
-  description: string;
-  isGrayscale?: boolean;
-}
-
 interface VideoItem {
   title: string;
   duration: string;
@@ -29,51 +22,6 @@ interface ArchiveItem {
   documents: ArchiveDocument[];
   isGrayscale?: boolean;
 }
-
-// --- DADOS ---
-const timelineData: TimelineEvent[] = [
-  {
-    title: "SINU I",
-    year: "2007",
-    description: "Em 2007, a SINU realizou sua primeira edição com quatro comitês: Comissão de Desenvolvimento Sustentável, Conselho de Segurança, OMC e Imprensa. Desde o início, destacou-se como uma iniciativa inovadora ao promover o protagonismo estudantil na organização e participação do evento."
-  },
-  {
-    title: "SINU XIV",
-    year: "2020",
-    description: "",
-    isGrayscale: true
-  },
-  {
-    title: "SINU XV",
-    year: "2021",
-    description: "Na edição de 2021, já era possível perceber um avanço significativo na dimensão do evento, com a criação de novos comitês, como o CDH e o CSH. Ao mesmo tempo, a SINU manteve sua tradição com comitês como o CSNU, a OMC e a Imprensa. Quinze anos após a primeira edição, o número de alunos engajados na organização e na participação cresceu expressivamente. Esse crescimento evidencia a relevância e o impacto da SINU ao longo dos anos."
-  },
-  {
-    title: "SINU XVI",
-    year: "2022",
-    description: "Em 2022, a XVI SINU reuniu os comitês CI, CDH, UNIFEM, CSH, CSNU e OMC e inovou com a adoção do PNUMA, colocando o meio ambiente em evidência, ampliando o alcance e a relevância dos debates internacionais promovidos pelo evento."
-  },
-  {
-    title: "SINU XVII",
-    year: "2023",
-    description: "Realizada em 2023, a XVII SINU reuniu os comitês CSNU, CI, OMC, PNUMA, CDH, UNIFEM e CSH, inovando com a adoção do TPI. A inclusão do comitê destacou a responsabilização penal individual no cenário do direito internacional."
-  },
-  {
-    title: "SINU XVIII",
-    year: "2024",
-    description: "No ano de 2024, chegamos a XVIII SINU. Contando com CI, CDH, UNIFEM, CSH, CSNU, OMC e PNUMA, tivemos a criação do Senado Federal. Além disso, pela primeira vez tivemos conteúdos audiovisuais. Essas inovações deixaram um grande legado, impactando a experiência na simulação até hoje."
-  },
-  {
-    title: "SINU XIX",
-    year: "2025",
-    description: "Em 2025, a XIX SINU reuniu os comitês CI, CDH, UNIFEM, CSH, CSNU, OMC e o Congresso Nacional, inovando ao substituir o Senado Federal e ao introduzir crises conjuntas, que ampliaram a integração entre os comitês e fortaleceram a relevância dos debates promovidos pelo evento."
-  },
-  {
-    title: "SINU XX",
-    year: "2026",
-    description: "Neste ano, a XX SINU terá propostas ainda a serem reveladas, mas que reforçam o compromisso do evento com a excelência acadêmica, a integração entre os comitês e a relevância dos temas debatidos."
-  }
-];
 
 const newspaperArchives: ArchiveItem[] = [
   { 
@@ -127,179 +75,14 @@ const videosData: VideoItem[] = [
     duration: "Assista Agora",
     thumbnail: "https://img.youtube.com/vi/qIa3C8dpbY4/hqdefault.jpg",
     url: "https://youtu.be/qIa3C8dpbY4"
+  },
+  {
+    title: "SINU - Senado Federal",
+    duration: "Assista Agora",
+    thumbnail: "https://img.youtube.com/vi/RDGZUmZP0vA/hqdefault.jpg",
+    url: "https://www.youtube.com/watch?v=RDGZUmZP0vA"
   }
 ];
-
-// --- SUB-COMPONENTES ---
-
-const TimelineView: React.FC = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [isPaused, setIsPaused] = useState(false);
-
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
-
-    let animationFrameId: number;
-
-    const scroll = () => {
-      // Se não estiver pausado, move o scroll
-      if (!isPaused && scrollContainer) {
-        // Velocidade do scroll (0.8px por frame)
-        scrollContainer.scrollLeft += 0.8;
-
-        // Se chegou ao fim (com uma margem de erro pequena), volta pro começo
-        // scrollWidth - clientWidth = máximo valor de scrollLeft
-        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth - 1) {
-          scrollContainer.scrollLeft = 0;
-        }
-      }
-      animationFrameId = requestAnimationFrame(scroll);
-    };
-
-    animationFrameId = requestAnimationFrame(scroll);
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isPaused]);
-
-  // Função para scroll manual
-  const scrollManual = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      const scrollAmount = 350; // Largura do card + gap aproximado
-      const currentScroll = scrollRef.current.scrollLeft;
-      const targetScroll = direction === 'left' 
-        ? currentScroll - scrollAmount 
-        : currentScroll + scrollAmount;
-      
-      scrollRef.current.scrollTo({
-        left: targetScroll,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  return (
-    <div 
-      className="relative"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={() => setIsPaused(true)}
-      onTouchEnd={() => setIsPaused(false)}
-    >
-      {/* Botão Esquerdo */}
-      <button 
-        onClick={() => scrollManual('left')}
-        className="absolute left-0 md:left-4 top-[55%] -translate-y-1/2 z-30 p-3 rounded-full bg-un-dark/60 border border-white/20 backdrop-blur-sm text-white hover:bg-un-accent hover:text-un-dark hover:scale-110 transition-all shadow-xl hidden md:flex"
-        aria-label="Anterior"
-      >
-        <ChevronLeft className="w-6 h-6" />
-      </button>
-
-      {/* Botão Direito */}
-      <button 
-        onClick={() => scrollManual('right')}
-        className="absolute right-0 md:right-4 top-[55%] -translate-y-1/2 z-30 p-3 rounded-full bg-un-dark/60 border border-white/20 backdrop-blur-sm text-white hover:bg-un-accent hover:text-un-dark hover:scale-110 transition-all shadow-xl hidden md:flex"
-        aria-label="Próximo"
-      >
-        <ChevronRight className="w-6 h-6" />
-      </button>
-
-      {/* Container com scroll horizontal */}
-      <div 
-        ref={scrollRef}
-        className="overflow-x-auto pb-12 pt-4 hide-scrollbar cursor-grab active:cursor-grabbing snap-x"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }} // Esconde scrollbar nativa
-      >
-        <div className="flex px-4 md:px-12 gap-8 min-w-max relative items-start">
-          
-          {/* Linha Horizontal Conectora (Atrás do conteúdo) */}
-          <div className="absolute top-[3rem] left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-un-accent/50 to-transparent z-0"></div>
-
-          {timelineData.map((item, index) => (
-            <motion.div 
-              key={index}
-              className="relative flex flex-col items-center w-72 md:w-80 shrink-0 group snap-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              
-              {/* Ano (Badge) - Topo */}
-              <div className="z-10 mb-6">
-                <span className={`font-bold tracking-widest uppercase text-sm px-4 py-1.5 rounded-full border shadow-lg transition-all duration-300 ${
-                  item.isGrayscale 
-                  ? 'text-slate-400 bg-slate-800 border-slate-600' 
-                  : 'text-un-dark bg-un-accent border-un-accent group-hover:bg-white group-hover:text-un-dark'
-                }`}>
-                  {item.year}
-                </span>
-              </div>
-
-              {/* Marcador (Bolinha) - Meio, sobre a linha */}
-              <div className="absolute top-[3rem] -translate-y-1/2 z-10">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center border-4 transition-all duration-300 ${
-                  item.isGrayscale 
-                  ? 'bg-slate-700 border-slate-500 shadow-none' 
-                  : 'bg-un-dark border-un-accent shadow-[0_0_15px_rgba(212,175,55,0.6)] group-hover:scale-125 group-hover:bg-un-accent group-hover:border-white'
-                }`}>
-                  <div className={`w-1.5 h-1.5 rounded-full ${item.isGrayscale ? 'bg-slate-400' : 'bg-white group-hover:bg-un-dark'}`}></div>
-                </div>
-              </div>
-
-              {/* Card de Conteúdo - Baixo */}
-              <div className={`mt-8 w-full bg-white/5 backdrop-blur-sm border p-6 rounded-2xl transition-all duration-300 h-full flex flex-col items-center text-center ${
-                item.isGrayscale 
-                ? 'border-slate-700 grayscale' 
-                : 'border-white/10 hover:border-un-accent/50 hover:bg-white/10 hover:-translate-y-2 group-hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)]'
-              }`}>
-                <h4 className={`text-xl font-serif font-bold ${item.description ? 'mb-3' : 'mb-0'} transition-colors ${
-                  item.isGrayscale 
-                  ? 'text-slate-400' 
-                  : 'text-white group-hover:text-un-accent'
-                }`}>
-                  {item.title.includes('SINU XX') && !item.isGrayscale ? (
-                    <>
-                      {item.title.split('SINU XX').map((part, i, arr) => (
-                        <React.Fragment key={i}>
-                          {part}
-                          {i < arr.length - 1 && (
-                            <span className="text-un-accent font-extrabold drop-shadow-[0_0_8px_rgba(212,175,55,0.5)]">SINU XX</span>
-                          )}
-                        </React.Fragment>
-                      ))}
-                    </>
-                  ) : item.title}
-                </h4>
-                {item.description && (
-                  <p className={`leading-relaxed text-sm ${
-                    item.isGrayscale ? 'text-slate-500' : 'text-white/70'
-                  }`}>
-                    {item.description}
-                  </p>
-                )}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-      
-      {/* Indicador de scroll para UX (apenas mobile quando não está em hover) */}
-      {!isPaused && (
-        <div className="flex justify-center mt-2 text-white/30 text-xs animate-pulse md:hidden transition-opacity">
-           <span className="flex items-center gap-2"><ArrowRight className="w-4 h-4" /> Toque para pausar</span>
-        </div>
-      )}
-
-      <div className="flex justify-center mt-8">
-          <div className="bg-un-accent text-un-dark px-6 py-2 rounded-full font-bold flex items-center gap-2 shadow-lg text-sm">
-              <Star className="w-4 h-4 fill-current" />
-              <span>O Futuro Continua</span>
-          </div>
-      </div>
-    </div>
-  );
-};
 
 const NewsView: React.FC = () => {
   const [selectedArchive, setSelectedArchive] = useState<ArchiveItem | null>(null);
@@ -476,46 +259,92 @@ const NewsView: React.FC = () => {
   );
 };
 
-const VideosView: React.FC = () => (
-  <motion.div 
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ duration: 0.5 }}
-    className="grid md:grid-cols-3 gap-6"
-  >
-    {videosData.map((video, idx) => (
-      <a 
-        key={idx} 
-        href={video.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group cursor-pointer block"
-      >
-        <div className="relative rounded-xl overflow-hidden aspect-video mb-4 border border-white/10 shadow-lg">
-          <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+const VideosView: React.FC = () => {
+  const featuredVideo = videosData[0];
+  const otherVideos = videosData.slice(1);
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="flex flex-col gap-12"
+    >
+      {/* Featured Video */}
+      <div className="w-full max-w-4xl mx-auto">
+        <a 
+          href={featuredVideo.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group relative block rounded-2xl overflow-hidden aspect-video shadow-2xl border border-white/10"
+        >
+          <img 
+            src={featuredVideo.thumbnail} 
+            alt={featuredVideo.title} 
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+            loading="lazy"
+            decoding="async"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-un-dark via-transparent to-transparent opacity-80"></div>
+          
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-14 h-14 bg-un-accent/90 rounded-full flex items-center justify-center pl-1 shadow-lg transform group-hover:scale-110 transition-transform">
-              <Play className="w-6 h-6 text-un-dark fill-current" />
+            <motion.div 
+              whileHover={{ scale: 1.1 }}
+              className="w-20 h-20 bg-un-accent rounded-full flex items-center justify-center pl-1 shadow-[0_0_30px_rgba(212,175,55,0.5)]"
+            >
+              <Play className="w-8 h-8 text-un-dark fill-current" />
+            </motion.div>
+          </div>
+
+          <div className="absolute bottom-0 left-0 p-8 w-full">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="px-2 py-0.5 bg-un-accent text-un-dark text-[10px] font-bold uppercase rounded">Destaque</span>
+              <span className="text-white/60 text-xs font-mono">{featuredVideo.duration}</span>
             </div>
+            <h3 className="text-2xl md:text-3xl font-serif font-bold text-white group-hover:text-un-accent transition-colors">
+              {featuredVideo.title}
+            </h3>
           </div>
-          <div className="absolute bottom-3 right-3 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">
-            {video.duration}
-          </div>
-        </div>
-        <h3 className="text-white font-bold font-serif text-lg group-hover:text-un-accent transition-colors">
-          {video.title}
-        </h3>
-        <p className="text-white/50 text-sm mt-1">Canal Oficial SINU</p>
-      </a>
-    ))}
-    
-    <div className="col-span-full text-center mt-8">
-      <a href="https://www.youtube.com/@sinucsl" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-6 py-3 border border-white/20 hover:border-un-accent hover:text-un-accent text-white rounded-full transition-all">
-        Ver canal completo no YouTube <ArrowRight className="w-4 h-4 ml-2" />
-      </a>
-    </div>
-  </motion.div>
-);
+        </a>
+      </div>
+
+      {/* Other Videos Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {otherVideos.map((video, idx) => (
+          <a 
+            key={idx} 
+            href={video.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group cursor-pointer block"
+          >
+            <div className="relative rounded-xl overflow-hidden aspect-video mb-4 border border-white/10 shadow-lg">
+              <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" loading="lazy" decoding="async" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-12 h-12 bg-un-accent/90 rounded-full flex items-center justify-center pl-1 shadow-lg transform group-hover:scale-110 transition-transform">
+                  <Play className="w-5 h-5 text-un-dark fill-current" />
+                </div>
+              </div>
+              <div className="absolute bottom-3 right-3 bg-black/80 text-white text-[10px] font-bold px-2 py-1 rounded">
+                {video.duration}
+              </div>
+            </div>
+            <h4 className="text-white font-bold font-serif text-lg group-hover:text-un-accent transition-colors">
+              {video.title}
+            </h4>
+            <p className="text-white/50 text-xs mt-1">Canal Oficial SINU</p>
+          </a>
+        ))}
+      </div>
+      
+      <div className="text-center">
+        <a href="https://www.youtube.com/@sinucsl" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-8 py-4 bg-white/5 hover:bg-un-accent hover:text-un-dark text-white rounded-full transition-all border border-white/10 font-bold">
+          Explorar Canal no YouTube <ArrowRight className="w-4 h-4 ml-2" />
+        </a>
+      </div>
+    </motion.div>
+  );
+};
 
 const GalleryView: React.FC = () => {
   const galleries = [
@@ -546,39 +375,54 @@ const GalleryView: React.FC = () => {
           href={gallery.url}
           target="_blank"
           rel="noopener noreferrer"
-          whileHover={{ scale: 1.02, y: -5 }}
-          className="relative aspect-video rounded-2xl overflow-hidden border border-white/10 group shadow-2xl cursor-pointer"
+          whileHover={{ y: -10 }}
+          className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 group shadow-2xl cursor-pointer"
         >
-          {/* Background Image */}
-          <img 
-            src={gallery.image} 
-            alt={gallery.title}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-80"
-          />
+          {/* Background Image with Zoom */}
+          <div className="absolute inset-0 overflow-hidden">
+            <img 
+              src={gallery.image} 
+              alt={gallery.title}
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-40 group-hover:opacity-60"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
           
-          {/* Overlay Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-un-dark via-un-dark/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+          {/* Overlay Gradient - Dynamic */}
+          <div className="absolute inset-0 bg-gradient-to-t from-un-dark via-un-dark/40 to-transparent opacity-90 group-hover:opacity-70 transition-opacity duration-500"></div>
           
-          {/* Content */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-            <div className="mb-4 p-3 rounded-full bg-un-accent/20 text-un-accent border border-un-accent/30 transform group-hover:scale-110 transition-transform">
-              <ImageIcon className="w-8 h-8" />
-            </div>
-            <h4 className="text-3xl font-serif font-bold text-white mb-1 group-hover:text-un-accent transition-colors">
+          {/* Content - Centered and Animated */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+            <motion.div 
+              initial={{ opacity: 0.5, scale: 0.8 }}
+              whileHover={{ opacity: 1, scale: 1.1 }}
+              className="mb-6 p-4 rounded-full bg-white/5 backdrop-blur-md text-un-accent border border-white/10 group-hover:border-un-accent/50 transition-all duration-500"
+            >
+              <ImageIcon className="w-10 h-10" />
+            </motion.div>
+            
+            <h4 className="text-4xl font-serif font-bold text-white mb-2 group-hover:text-un-accent transition-colors duration-500 tracking-tight">
               {gallery.title}
             </h4>
-            <p className="text-un-accent font-bold tracking-widest text-sm uppercase opacity-80">
-              Edição {gallery.year}
-            </p>
             
-            <div className="mt-6 flex items-center gap-2 text-white/60 text-xs font-bold uppercase tracking-widest group-hover:text-white transition-colors">
-              <span>Ver Álbum Completo</span>
-              <ExternalLink className="w-4 h-4" />
+            <div className="flex items-center gap-3 mb-6">
+              <div className="h-px w-6 bg-un-accent/50"></div>
+              <p className="text-un-accent font-mono text-sm uppercase tracking-[0.3em]">
+                {gallery.year}
+              </p>
+              <div className="h-px w-6 bg-un-accent/50"></div>
+            </div>
+            
+            <div className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/5 border border-white/10 text-white/60 text-[10px] font-bold uppercase tracking-widest group-hover:bg-un-accent group-hover:text-un-dark group-hover:border-un-accent transition-all duration-500">
+              <span>Acessar Álbum</span>
+              <ExternalLink className="w-3.5 h-3.5" />
             </div>
           </div>
 
-          {/* Border Glow */}
-          <div className="absolute inset-0 border-2 border-un-accent/0 group-hover:border-un-accent/30 transition-colors rounded-2xl"></div>
+          {/* Technical Corner Accents */}
+          <div className="absolute top-4 left-4 w-4 h-4 border-t border-l border-white/20 group-hover:border-un-accent transition-colors"></div>
+          <div className="absolute bottom-4 right-4 w-4 h-4 border-b border-r border-white/20 group-hover:border-un-accent transition-colors"></div>
         </motion.a>
       ))}
     </motion.div>
@@ -588,47 +432,49 @@ const GalleryView: React.FC = () => {
 // --- COMPONENTE PRINCIPAL ---
 
 const Legacy: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'timeline' | 'news' | 'videos' | 'gallery'>('timeline');
+  const [activeTab, setActiveTab] = useState<'news' | 'videos' | 'gallery'>('news');
 
   return (
     <section id="legado" className="py-24 bg-un-dark relative overflow-hidden text-white min-h-screen">
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-un-blue/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-un-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+      {/* Atmospheric Background Elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-un-blue/10 rounded-full blur-[120px] pointer-events-none opacity-50"></div>
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-un-accent/5 rounded-full blur-[100px] pointer-events-none opacity-30"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.02] pointer-events-none" 
+           style={{ backgroundImage: 'radial-gradient(circle, #fecc00 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+      
+      {/* Floating Decorative Icons */}
+      <motion.div 
+        animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-20 left-[10%] opacity-10 pointer-events-none hidden lg:block"
+      >
+        <History className="w-24 h-24 text-un-accent" />
+      </motion.div>
+      <motion.div 
+        animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="absolute bottom-40 right-[10%] opacity-10 pointer-events-none hidden lg:block"
+      >
+        <Newspaper className="w-32 h-32 text-un-blue" />
+      </motion.div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="mb-8 hover:scale-105 transition-transform duration-300 inline-block">
-             <SinuLogo className="h-32 w-auto object-contain" />
+          <div className="mb-6 md:mb-8 hover:scale-105 transition-transform duration-300 inline-block">
+             <SinuLogo className="h-24 sm:h-28 md:h-32 w-auto object-contain" />
           </div>
-          <h2 className="text-un-accent font-bold tracking-widest uppercase text-sm mb-3">Nossa História & Mídia</h2>
-          <h3 className="text-4xl md:text-5xl font-serif font-bold text-white drop-shadow-xl">
+          <h2 className="text-un-accent font-bold tracking-widest uppercase text-xs sm:text-sm mb-3">Nossa História & Mídia</h2>
+          <h3 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-white drop-shadow-xl">
             Legado SINU
           </h3>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex justify-center mb-16 overflow-x-auto pb-4 md:pb-0">
+        <div className="flex justify-center mb-12 md:mb-16 overflow-x-auto pb-4 md:pb-0 scrollbar-hide">
           <div className="bg-white/5 backdrop-blur-md p-1 rounded-full border border-white/10 flex gap-1 min-w-max">
             
-            <button
-              onClick={() => setActiveTab('timeline')}
-              className={`relative px-4 md:px-6 py-2 rounded-full text-sm font-bold transition-colors flex items-center gap-2 ${
-                activeTab === 'timeline' ? 'text-un-dark' : 'text-white/60 hover:text-white'
-              }`}
-            >
-              {activeTab === 'timeline' && (
-                <motion.div
-                  layoutId="active-tab"
-                  className="absolute inset-0 bg-un-accent rounded-full"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
-              <span className="relative z-10 flex items-center gap-2"><History className="w-4 h-4" /> <span className="hidden md:inline">Linha do Tempo</span></span>
-            </button>
-
             <button
               onClick={() => setActiveTab('news')}
               className={`relative px-4 md:px-6 py-2 rounded-full text-sm font-bold transition-colors flex items-center gap-2 ${
@@ -683,18 +529,6 @@ const Legacy: React.FC = () => {
         {/* Content Area */}
         <div className="min-h-[400px]">
           <AnimatePresence mode="wait">
-            {activeTab === 'timeline' && (
-              <motion.div
-                key="timeline"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-              >
-                <TimelineView />
-              </motion.div>
-            )}
-
             {activeTab === 'news' && (
               <motion.div
                 key="news"

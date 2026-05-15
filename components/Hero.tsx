@@ -80,7 +80,7 @@ const Hero: React.FC = () => {
           className="mb-4"
         >
           <div className="relative">
-            <SinuLogo className="w-48 h-48 sm:w-64 sm:h-64 md:w-[28rem] md:h-[28rem] relative z-10 drop-shadow-[0_15px_50px_rgba(65,143,222,0.1)]" />
+            <SinuLogo className="w-40 h-40 xs:w-48 xs:h-48 sm:w-64 sm:h-64 md:w-[24rem] md:h-[24rem] lg:w-[28rem] lg:h-[28rem] relative z-10 drop-shadow-[0_15px_50px_rgba(65,143,222,0.1)]" />
           </div>
         </motion.div>
 
@@ -92,18 +92,18 @@ const Hero: React.FC = () => {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="flex items-center justify-center gap-4 mb-4"
           >
-            <span className="h-px w-12 bg-slate-200"></span>
-            <span className="text-[11px] font-bold tracking-[0.4em] uppercase text-un-accent">
+            <span className="h-px w-8 sm:w-12 bg-slate-200"></span>
+            <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.4em] uppercase text-un-accent">
               XX Edição
             </span>
-            <span className="h-px w-12 bg-slate-200"></span>
+            <span className="h-px w-8 sm:w-12 bg-slate-200"></span>
           </motion.div>
 
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
-            className="text-[#03005c] text-6xl sm:text-8xl md:text-[10rem] lg:text-[12rem] font-serif font-black tracking-tighter leading-[0.9] md:leading-[0.8]"
+            className="text-[#03005c] text-6xl xs:text-7xl sm:text-7xl md:text-8xl lg:text-[10rem] xl:text-[12rem] font-serif font-black tracking-tighter leading-[0.9] md:leading-[0.8]"
           >
             SINU <span className="text-un-accent font-light italic">XX</span>
           </motion.h1>
@@ -112,10 +112,38 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 1 }}
-            className="mt-10 text-un-blue font-sans font-bold text-[10px] md:text-xs tracking-[0.5em] uppercase max-w-3xl mx-auto"
+            className="mt-4 md:mt-10 text-un-blue font-sans font-bold text-[8px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.5em] uppercase max-w-3xl mx-auto px-4"
           >
             Simulação Interna das Nações Unidas
           </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+            className="mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 px-6"
+          >
+            <motion.a
+              href="https://forms.office.com/pages/responsepage.aspx?id=mI4F_8_-GE2_s2rKqm9tbxVF5m8g5PhBrtQTpQjQ_KpUQVpCQTdPMUs3TTIzNjE2RkxYRDNXV09HQy4u&route=shorturl"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full sm:w-auto bg-[#03005c] text-white px-8 md:px-10 py-3.5 md:py-4 rounded-full font-bold uppercase tracking-widest text-xs md:text-sm shadow-xl hover:bg-un-blue transition-all flex items-center justify-center gap-3 group"
+            >
+              Inscreva-se Agora
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </motion.a>
+            
+            <motion.a
+              href="#sobre"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full sm:w-auto bg-white text-[#03005c] border-2 border-[#03005c] px-8 md:px-10 py-3.5 md:py-4 rounded-full font-bold uppercase tracking-widest text-xs md:text-sm hover:bg-[#03005c] hover:text-white transition-all flex items-center justify-center"
+            >
+              Saiba Mais
+            </motion.a>
+          </motion.div>
 
           {/* Bottom Center Dot from Screenshot */}
           <motion.div

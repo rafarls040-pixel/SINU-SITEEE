@@ -1,64 +1,50 @@
-import React from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
-import Legacy from './components/Legacy';
-import Secretariat from './components/Secretariat';
-import Sponsors from './components/Sponsors';
-import Footer from './components/Footer';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
 import BackgroundText from './components/BackgroundText';
+
+// Lazy load committee pages
+const CSNU = lazy(() => import('./pages/CSNU'));
+const CN = lazy(() => import('./pages/CN'));
+const UNODC = lazy(() => import('./pages/UNODC'));
+const PNUMA = lazy(() => import('./pages/PNUMA'));
+const UNIFEM = lazy(() => import('./pages/UNIFEM'));
+const CDH = lazy(() => import('./pages/CDH'));
+const Historic = lazy(() => import('./pages/Historic'));
+const CI = lazy(() => import('./pages/CI'));
+const OPEP = lazy(() => import('./pages/OPEP'));
+const TO = lazy(() => import('./pages/TO'));
+
+const LoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-un-dark">
+    <div className="w-12 h-12 border-4 border-un-accent border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 const App: React.FC = () => {
   return (
-    <div className="min-h-screen font-sans relative selection:bg-un-accent selection:text-un-dark">
-      <BackgroundText />
-      <Navbar />
-      
-      <main className="relative z-10">
-        <Hero />
-        
-        {/* Container with some spacing/transparency management if needed */}
-        <div className="space-y-0">
-          <About />
-          
-          {/* Adicionando a seção de Secretariado após o Sobre */}
-          <Secretariat />
-          
-          <Legacy />
-          
-          <Sponsors />
-          
-          {/* Registration CTA Section */}
-          <section id="inscricao" className="py-24 bg-un-dark/80 backdrop-blur-md relative overflow-hidden border-t border-white/10">
-            <div className="absolute inset-0 opacity-10">
-               <div className="absolute transform -rotate-45 -left-20 -top-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-               <div className="absolute transform rotate-45 right-0 bottom-0 w-80 h-80 bg-un-accent rounded-full blur-3xl"></div>
-            </div>
-            
-            <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-              <h2 className="text-3xl md:text-5xl font-serif font-bold text-white mb-8">
-                Faça parte dessa história
-              </h2>
-              
-              <div className="inline-flex flex-col items-center justify-center p-10 border border-un-accent/30 rounded-2xl bg-white/5 backdrop-blur-sm shadow-2xl">
-                <span className="text-un-accent font-bold tracking-[0.3em] uppercase text-sm mb-4 bg-un-accent/10 px-4 py-1 rounded-full">
-                  Edição 2026
-                </span>
-                <h3 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-4 drop-shadow-xl">
-                  EM BREVE
-                </h3>
-                <p className="text-un-light/80 text-lg max-w-lg mx-auto leading-relaxed">
-                  Estamos preparando algo incrível. As inscrições para delegados e escolas abrirão nos próximos dias.
-                </p>
-                <div className="mt-8 w-16 h-1 bg-un-accent rounded-full opacity-50"></div>
-              </div>
-            </div>
-          </section>
+    <BrowserRouter>
+      <div className="relative min-h-screen bg-white">
+        <BackgroundText />
+        <div className="relative z-10">
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/comite/csnu" element={<CSNU />} />
+              <Route path="/comite/cn" element={<CN />} />
+              <Route path="/comite/unodc" element={<UNODC />} />
+              <Route path="/comite/pnuma" element={<PNUMA />} />
+              <Route path="/comite/unifem" element={<UNIFEM />} />
+              <Route path="/comite/cdh" element={<CDH />} />
+              <Route path="/comite/historico" element={<Historic />} />
+              <Route path="/comite/ci" element={<CI />} />
+              <Route path="/comite/opep" element={<OPEP />} />
+              <Route path="/comite/to" element={<TO />} />
+            </Routes>
+          </Suspense>
         </div>
-      </main>
-      
-      <Footer />
-    </div>
+      </div>
+    </BrowserRouter>
   );
 };
 

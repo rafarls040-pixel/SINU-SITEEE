@@ -6,6 +6,8 @@ const SinuLogo: React.FC<{ className?: string }> = ({ className }) => {
       src="https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/LOGO+DA+SINU+OFC.png" 
       alt="Logo SINU" 
       className={`${className} object-contain`}
+      fetchPriority="high"
+      decoding="async"
     />
   );
 };

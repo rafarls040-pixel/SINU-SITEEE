@@ -1,12 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, Coins, GraduationCap, CalendarHeart, Megaphone, Palette, User, AlertCircle } from 'lucide-react';
-
-interface Member {
-  name: string;
-  shift: string;
-  image?: string;
-}
+import MemberCarousel, { Member } from './MemberCarousel';
 
 interface Team {
   id: string;
@@ -97,79 +92,13 @@ const teams: Team[] = [
   }
 ];
 
-const MemberCarousel: React.FC<{ members: Member[], isDark?: boolean }> = ({ members, isDark }) => {
-  const [currentIndex, setCurrentIndex] = React.useState(0);
-
-  React.useEffect(() => {
-    if (members.length <= 1) return;
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % members.length);
-    }, 4000); // Change every 4 seconds
-    return () => clearInterval(timer);
-  }, [members.length]);
-
-  const member = members[currentIndex];
-
-  return (
-    <div className="relative w-full h-[350px] md:h-[400px] flex flex-col items-center justify-center overflow-hidden">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="w-full flex flex-col items-center p-4"
-        >
-          <div className="w-full max-w-[210px] aspect-square overflow-hidden mb-6 relative group/member bg-white/70 rounded-2xl">
-            {member.image ? (
-              <img src={member.image} alt={member.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-            ) : (
-              <div className={`w-full h-full ${isDark ? 'bg-white/10' : 'bg-un-light'} flex items-center justify-center`}>
-                <User className={`w-16 h-16 ${isDark ? 'text-white/40' : 'text-un-accent/60'}`} />
-              </div>
-            )}
-            {/* Removed hover overlay */}
-          </div>
-          
-          <div className="text-center w-full mt-auto pt-2">
-            <p className={`text-lg md:text-xl font-serif font-bold leading-tight mb-2 md:mb-3 px-1 tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              {member.name}
-            </p>
-            <div className="flex justify-center">
-              <span className={`text-[10px] font-bold uppercase tracking-[0.2em] px-4 py-1.5 rounded-full border ${isDark ? 'text-white bg-white/10 border-white/20' : 'text-un-dark bg-un-accent/15 border-un-accent/10'}`}>
-                {member.shift}
-              </span>
-            </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Pagination Dots */}
-      {members.length > 1 && (
-        <div className="absolute bottom-2 flex gap-1.5">
-          {members.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentIndex(idx)}
-              className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                idx === currentIndex ? (isDark ? 'bg-un-accent w-4' : 'bg-un-accent w-4') : (isDark ? 'bg-white/20' : 'bg-slate-300')
-              }`}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-
 const Secretariat: React.FC = () => {
   // Separate General from others to highlight it
   const generalTeam = teams.find(t => t.id === 'geral');
   const otherTeams = teams.filter(t => t.id !== 'geral');
 
   return (
-    <section id="secretariado" className="py-24 relative overflow-hidden">
+    <section id="secretariado" className="py-12 md:py-24 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div 
           className="text-center mb-16"
@@ -213,12 +142,12 @@ const Secretariat: React.FC = () => {
                     <h5 className="text-xs font-bold text-un-accent uppercase tracking-widest mb-4 flex items-center gap-2">
                        <span className="w-2 h-2 rounded-full bg-un-accent"></span> Membros
                     </h5>
-                    <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                    <div className="grid sm:grid-cols-2 gap-6 md:gap-8 max-w-6xl mx-auto">
                       {generalTeam.members.map((member, idx) => (
-                        <div key={idx} className="flex flex-col items-center gap-6 p-6 rounded-[2rem] bg-transparent transition-all duration-700 group/card">
-                          <div className="w-full max-w-[280px] mx-auto aspect-square overflow-hidden shrink-0 group-hover/card:scale-[1.02] transition-all duration-700 bg-white/70 rounded-2xl">
+                        <div key={idx} className="flex flex-col items-center gap-4 md:gap-6 p-4 md:p-6 rounded-[2rem] bg-transparent transition-all duration-700 group/card">
+                          <div className="w-full max-w-[200px] md:max-w-[280px] mx-auto aspect-square overflow-hidden shrink-0 group-hover/card:scale-[1.02] transition-all duration-700 bg-white/70 rounded-2xl">
                             {member.image ? (
-                              <img src={member.image} alt={member.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                              <img src={member.image} alt={member.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" loading="lazy" decoding="async" />
                             ) : (
                               <div className="w-full h-full bg-un-dark text-white flex items-center justify-center text-7xl font-bold">
                                 {member.name.charAt(0)}
@@ -253,7 +182,7 @@ const Secretariat: React.FC = () => {
           )}
 
           {/* Other Secretariats Grid - Alterado para Flexbox para centralizar itens "órfãos" */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {otherTeams.map((team, idx) => {
               const isDark = true; // All cards blue as requested
               return (

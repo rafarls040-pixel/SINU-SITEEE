@@ -22,6 +22,8 @@ const About: React.FC = () => {
               src="https://sinu-csl-site.s3.sa-east-1.amazonaws.com/LEGACYY/Design+sem+nome+(2).png" 
               alt="SINU Ilustração" 
               className="w-full h-full object-cover object-center"
+              loading="lazy"
+              decoding="async"
             />
           </div>
 
@@ -30,7 +32,7 @@ const About: React.FC = () => {
              Tem um delay de 1.0s (delay: 1) para permitir que a imagem seja vista primeiro.
           */}
           <motion.div 
-            className="relative z-10 w-full lg:w-7/12 p-6 sm:p-8 md:p-12 lg:p-16 mx-auto lg:ml-0"
+            className="relative z-10 w-full md:w-10/12 lg:w-7/12 p-3 sm:p-8 md:p-12 lg:p-16 mx-auto lg:ml-0"
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -42,7 +44,7 @@ const About: React.FC = () => {
                 Mais que um evento, uma experiência transformadora.
               </h3>
               
-              <div className="space-y-3 sm:space-y-4 md:space-y-6 text-slate-900 text-sm sm:text-base md:text-lg leading-relaxed text-justify font-medium">
+              <div className="space-y-3 sm:space-y-4 md:space-y-6 text-slate-900 text-sm sm:text-base md:text-lg leading-relaxed text-left sm:text-justify font-medium">
                 <p className="drop-shadow-sm">
                   A Simulação Interna das Nações Unidas (SINU) é um tradicional evento acadêmico de debates sobre temas atuais da geopolítica brasileira e internacional, organizado pelos estudantes do Colégio São Luís e, em 2026, chega a sua vigésima edição. Nele, os participantes representam delegações ou deputados, instigando o pensamento crítico e oratória por meio de problemáticas, crises e resoluções acerca dos maiores desafios contemporâneos.
                 </p>

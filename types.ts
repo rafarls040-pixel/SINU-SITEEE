@@ -2,11 +2,14 @@ export interface Committee {
   id: string;
   name: string;
   topic: string;
-  level: 'Iniciante' | 'Intermediário' | 'Avançado';
   iconName: string;
+  logoUrl?: string;
   description: string;
   images: string[]; // Array de URLs para o carrossel
   guideUrl?: string; // URL para o arquivo no S3 (PDF do Guia de Estudos)
+  pageUrl?: string; // URL para a página de detalhes do comitê
+  gradientFrom?: string;
+  gradientTo?: string;
 }
 
 export interface ScheduleItem {

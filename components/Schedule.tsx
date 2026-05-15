@@ -65,10 +65,10 @@ const Schedule: React.FC = () => {
                  </h4>
               </div>
               
-              <div className="space-y-6 ml-4 border-l-2 border-slate-300 pl-8 pb-4">
+              <div className="space-y-6 ml-2 sm:ml-4 border-l-2 border-slate-300 pl-6 sm:pl-8 pb-4">
                 {day.items.map((item, idx) => (
                   <div key={idx} className="relative group">
-                    <div className="absolute -left-[41px] top-1 h-5 w-5 rounded-full border-4 border-white bg-un-blue group-hover:scale-125 transition-transform"></div>
+                    <div className="absolute -left-[33px] sm:-left-[41px] top-1 h-4 w-4 sm:h-5 sm:w-5 rounded-full border-4 border-white bg-un-blue group-hover:scale-125 transition-transform"></div>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8 bg-white/50 p-3 rounded-lg hover:bg-white/80 transition-colors">
                       <span className="font-mono font-bold text-slate-500 w-16">{item.time}</span>
                       <div>
