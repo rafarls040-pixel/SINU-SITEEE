@@ -486,7 +486,7 @@ export const DelegateSection: React.FC = () => {
                 </div>
 
                 <p className="text-slate-600 text-sm md:text-base leading-relaxed text-justify">
-                  Todos os delegados devem entregar a autorização devidamente preenchida e assinada por seus respectivos responsáveis. Você pode preencher os dados abaixo diretamente no site para gerar o documento pronto ou simplesmente clicar em baixar para as preencher à mão!
+                  Todos os delegados devem entregar a autorização devidamente preenchida e assinada por seus respectivos responsáveis. Insira as informações abaixo para gerar o documento pronto e formatado para impressão.
                 </p>
 
                 {/* Interactive pre-fill inputs */}
