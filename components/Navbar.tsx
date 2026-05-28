@@ -9,6 +9,7 @@ const navLinks = [
   { name: 'Sobre', href: '#sobre', highlight: false },
   { name: 'Comitês', href: '#comites', highlight: false, hasDropdown: true },
   { name: 'Secretariado', href: '#secretariado', highlight: false },
+  { name: 'Delegados', href: '#delegado', highlight: false },
   { name: 'Legado', href: '#legado', highlight: true },
   { name: 'Parceiros', href: '#parceiros', highlight: false },
 ];
