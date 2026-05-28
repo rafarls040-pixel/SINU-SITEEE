@@ -516,8 +516,11 @@ export const DelegateSection: React.FC = () => {
                     <input 
                       type="text" 
                       value={guardianPhone}
-                      onChange={(e) => setGuardianPhone(e.target.value)}
-                      placeholder="Ex: (11) 98765-4321"
+                      onChange={(e) => {
+                        const onlyNums = e.target.value.replace(/\D/g, '');
+                        setGuardianPhone(onlyNums);
+                      }}
+                      placeholder="Ex: 11987654321"
                       className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 outline-none focus:border-un-blue focus:ring-1 focus:ring-un-blue/30 transition-all font-sans"
                     />
                   </div>
