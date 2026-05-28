@@ -48,16 +48,20 @@ export const DelegateSection: React.FC = () => {
       <html lang="pt-BR">
       <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>AUTORIZAÇÃO - SINU XX</title>
         <style>
           @page {
             size: A4;
-            margin: 20mm;
+            margin: 15mm;
+          }
+          * {
+            box-sizing: border-box;
           }
           body {
-            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            font-family: "Times New Roman", Times, Georgia, serif;
             color: #1a1a1a;
-            line-height: 1.8;
+            line-height: 1.4;
             margin: 0;
             padding: 0;
             background-color: #ffffff;
@@ -69,35 +73,38 @@ export const DelegateSection: React.FC = () => {
             max-width: 650px;
             margin: 0 auto;
             text-align: center;
+            padding: 10px;
           }
           .logo-anniversary {
-            margin: 20px auto 15px auto;
+            margin: 10px auto 10px auto;
             display: block;
+            max-width: 110px;
+            height: auto;
           }
           .sub-header {
-            font-size: 14pt;
+            font-size: 13pt;
             font-weight: bold;
             color: #0c3e7b;
             text-align: center;
             letter-spacing: 0.5px;
-            margin-bottom: 25px;
-            font-family: Arial, sans-serif;
+            margin-bottom: 12px;
+            font-family: "Times New Roman", Times, Georgia, serif;
           }
           .title-auth {
-            font-size: 15pt;
+            font-size: 14pt;
             font-weight: bold;
             color: #0c3e7b;
             text-align: center;
             letter-spacing: 1px;
-            margin-bottom: 55px;
-            font-family: Arial, sans-serif;
+            margin-bottom: 30px;
+            font-family: "Times New Roman", Times, Georgia, serif;
           }
           .content-text {
             text-align: justify;
             font-family: "Times New Roman", Times, Georgia, serif;
-            font-size: 13.5pt;
-            line-height: 1.9;
-            margin-bottom: 30px;
+            font-size: 12.5pt;
+            line-height: 1.6;
+            margin-bottom: 25px;
             text-indent: 0;
           }
           .inline-field {
@@ -105,71 +112,73 @@ export const DelegateSection: React.FC = () => {
             display: inline-block;
             text-align: center;
             font-weight: normal;
-            font-family: "Times New Roman", Times, serif;
-            font-size: 13.5pt;
+            font-family: "Times New Roman", Times, Georgia, serif;
+            font-size: 12.5pt;
             vertical-align: bottom;
             line-height: 1.2;
             padding: 0 4px;
+            max-width: 100%;
+            word-wrap: break-word;
+          }
+          .guardian-field {
+            border-bottom: 1px solid #000000;
+            display: inline-block;
+            text-align: center;
+            font-weight: normal;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11.5pt;
+            vertical-align: bottom;
+            line-height: 1.2;
+            padding: 0 4px;
+            max-width: 100%;
+            word-wrap: break-word;
           }
           .phone-section {
             text-align: left;
             font-family: "Times New Roman", Times, Georgia, serif;
-            font-size: 13.5pt;
-            margin-top: 45px;
-            margin-bottom: 130px;
+            font-size: 12.5pt;
+            margin-top: 25px;
+            margin-bottom: 50px;
           }
           .signature-section {
-            margin-top: 60px;
-            margin-bottom: 60px;
+            margin-top: 35px;
+            margin-bottom: 35px;
             text-align: center;
           }
           .signature-line {
-            width: 320px;
+            width: 280px;
+            max-width: 100%;
             border-top: 1px solid #000000;
-            margin: 0 auto 8px auto;
+            margin: 0 auto 5px auto;
           }
           .signature-label {
-            font-family: Arial, sans-serif;
-            font-size: 9.5pt;
+            font-family: "Times New Roman", Times, Georgia, serif;
+            font-size: 10.5pt;
             color: #333;
           }
           .warning-text {
-            font-family: Arial, sans-serif;
-            font-size: 7.5pt;
+            font-family: "Times New Roman", Times, Georgia, serif;
+            font-size: 8pt;
             font-weight: bold;
             color: #111;
             text-align: center;
-            line-height: 1.5;
-            margin-top: 60px;
-            margin-bottom: 45px;
+            line-height: 1.4;
+            margin-top: 35px;
+            margin-bottom: 25px;
             text-transform: uppercase;
             letter-spacing: 0.2px;
           }
           .footer-section {
-            border-top: 1px solid #e2e8f0;
-            padding-top: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-top: 20px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 12px;
+            margin-top: 15px;
+            text-align: center;
           }
-          .logo-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-          }
-          .school-text {
-            text-align: left;
-            font-family: "Times New Roman", Times, serif;
-            color: #022055;
-            font-weight: bold;
-            line-height: 1.1;
-          }
-          .divider-line {
-            width: 1px;
-            height: 38px;
-            background-color: #cbd5e1;
+          .footer-section img {
+            height: 32px;
+            width: auto;
+            display: block;
+            margin: 0 auto;
           }
           @media print {
             body {
@@ -177,6 +186,7 @@ export const DelegateSection: React.FC = () => {
             }
             .container {
               max-width: 100%;
+              padding: 0;
             }
           }
         </style>
@@ -184,7 +194,7 @@ export const DelegateSection: React.FC = () => {
       <body>
         <div class="container">
           <!-- Official Anniversary 20 SINU Logo -->
-          <img class="logo-anniversary" src="https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/LOGO+DA+SINU+OFC.png" alt="Logo Oficial SINU" width="130" height="130" style="object-fit: contain; display: block; margin: 15px auto 15px auto;" />
+          <img class="logo-anniversary" src="https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/LOGO+DA+SINU+OFC.png" alt="Logo Oficial SINU" />
 
           <!-- Headline -->
           <div class="sub-header">XX SIMULAÇÃO INTERNA DAS NAÇÕES UNIDAS</div>
@@ -194,13 +204,13 @@ export const DelegateSection: React.FC = () => {
 
           <!-- Document Text with precise fields and proportional underline blanks -->
           <div class="content-text">
-            Eu, <span class="inline-field" style="width: 440px;">${guardianName || '&nbsp;'}</span>, responsável por 
+            Eu, <span class="guardian-field" style="width: 440px;">${guardianName || '&nbsp;'}</span>, responsável por 
             <span class="inline-field" style="width: 410px;">${studentName || '&nbsp;'}</span>, autorizo-o(a) a participar da XX Simulação Interna das Nações Unidas (XX SINU), que acontecerá nos dias 28, 29 e 30 de agosto de 2026, nas dependências do Colégio São Luís.
           </div>
 
           <!-- Tel do Responsável Section -->
           <div class="phone-section">
-            Tel. do Responsável: <span class="inline-field" style="width: 250px;">${guardianPhone || '&nbsp;'}</span>
+            Tel. do Responsável: <span class="guardian-field" style="width: 250px;">${guardianPhone || '&nbsp;'}</span>
           </div>
 
           <!-- Signature block exactly centered -->
@@ -215,8 +225,8 @@ export const DelegateSection: React.FC = () => {
           </div>
 
           <!-- Bottom Partner Logos mimicking the official layout -->
-          <div class="footer-section" style="border-top: 1px solid #cbd5e1; padding-top: 15px; margin-top: 30px; text-align: center;">
-            <img src="https://static.saoluis.org/wp-content/uploads/2020/04/colegio-saoluis.png" alt="Colégio São Luís logo" style="height: 38px; width: auto; display: block; margin: 0 auto;" />
+          <div class="footer-section">
+            <img src="https://static.saoluis.org/wp-content/uploads/2020/04/colegio-saoluis.png" alt="Colégio São Luís logo" />
           </div>
         </div>
 
