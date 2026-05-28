@@ -9,7 +9,6 @@ const navLinks = [
   { name: 'Sobre', href: '#sobre', highlight: false },
   { name: 'Comitês', href: '#comites', highlight: false, hasDropdown: true },
   { name: 'Secretariado', href: '#secretariado', highlight: false },
-  { name: 'Delegados', href: '#delegado', highlight: false },
   { name: 'Legado', href: '#legado', highlight: true },
   { name: 'Parceiros', href: '#parceiros', highlight: false },
 ];
@@ -151,9 +150,8 @@ const Navbar: React.FC = () => {
             ))}
             
             <motion.a
-              href="https://forms.office.com/pages/responsepage.aspx?id=mI4F_8_-GE2_s2rKqm9tbxVF5m8g5PhBrtQTpQjQ_KpUQVpCQTdPMUs3TTIzNjE2RkxYRDNXV09HQy4u&route=shorturl"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#delegado"
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleNavClick(e, '#delegado')}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className={`px-6 py-2.5 rounded-full text-sm font-bold uppercase tracking-wide transition-all cursor-pointer ${
@@ -162,7 +160,7 @@ const Navbar: React.FC = () => {
                   : 'bg-[#03005c] text-white hover:bg-un-blue shadow-lg'
               }`}
             >
-              Inscreva-se
+              Área do Delegado
             </motion.a>
           </div>
 
@@ -240,12 +238,14 @@ const Navbar: React.FC = () => {
                 </div>
               ))}
                <a
-                  href="https://forms.office.com/pages/responsepage.aspx?id=mI4F_8_-GE2_s2rKqm9tbxVF5m8g5PhBrtQTpQjQ_KpUQVpCQTdPMUs3TTIzNjE2RkxYRDNXV09HQy4u&route=shorturl"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="#delegado"
+                  onClick={(e) => {
+                    setIsOpen(false);
+                    handleNavClick(e, '#delegado');
+                  }}
                   className="block text-center w-full bg-[#fecc00] text-[#03005c] px-6 py-4 rounded-xl text-lg font-bold uppercase tracking-widest mt-8 shadow-[0_0_20px_rgba(254,204,0,0.3)] active:scale-95 transition-transform"
                 >
-                  Inscreva-se
+                  Área do Delegado
                 </a>
                 
                 <div className="pt-12 text-center">

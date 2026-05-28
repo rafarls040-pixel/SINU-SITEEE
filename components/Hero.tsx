@@ -124,14 +124,25 @@ const Hero: React.FC = () => {
             className="mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 px-6"
           >
             <motion.a
-              href="https://forms.office.com/pages/responsepage.aspx?id=mI4F_8_-GE2_s2rKqm9tbxVF5m8g5PhBrtQTpQjQ_KpUQVpCQTdPMUs3TTIzNjE2RkxYRDNXV09HQy4u&route=shorturl"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#delegado"
+              onClick={(e) => {
+                e.preventDefault();
+                const element = document.getElementById('delegado');
+                if (element) {
+                  const headerOffset = 80;
+                  const elementPosition = element.getBoundingClientRect().top;
+                  const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                  window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                  });
+                }
+              }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-full sm:w-auto bg-[#03005c] text-white px-8 md:px-10 py-3.5 md:py-4 rounded-full font-bold uppercase tracking-widest text-xs md:text-sm shadow-xl hover:bg-un-blue transition-all flex items-center justify-center gap-3 group"
+              className="w-full sm:w-auto bg-[#03005c] text-white px-8 md:px-10 py-3.5 md:py-4 rounded-full font-bold uppercase tracking-widest text-xs md:text-sm shadow-xl hover:bg-un-blue transition-all flex items-center justify-center gap-3 group cursor-pointer"
             >
-              Inscreva-se Agora
+              Área do Delegado
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </motion.a>
             
