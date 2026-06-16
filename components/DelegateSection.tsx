@@ -52,18 +52,18 @@ export const DelegateSection: React.FC = () => {
         <title>AUTORIZAÇÃO - SINU XX</title>
         <style>
           @page {
-            size: A4;
-            margin: 15mm;
+            size: A4 portrait;
+            margin: 10mm;
           }
           * {
             box-sizing: border-box;
           }
-          body {
-            font-family: "Times New Roman", Times, Georgia, serif;
-            color: #1a1a1a;
-            line-height: 1.4;
+          html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
+            font-family: "Times New Roman", Times, Georgia, serif;
+            color: #1a1a1a;
             background-color: #ffffff;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -71,23 +71,33 @@ export const DelegateSection: React.FC = () => {
           .container {
             width: 100%;
             max-width: 650px;
+            height: 100%;
+            min-height: 100%;
             margin: 0 auto;
             text-align: center;
-            padding: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          }
+          .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
           }
           .logo-anniversary {
-            margin: 10px auto 10px auto;
+            margin: 5px auto 10px auto;
             display: block;
-            max-width: 110px;
-            height: auto;
+            height: 90px;
+            width: auto;
           }
           .sub-header {
             font-size: 13pt;
             font-weight: bold;
             color: #0c3e7b;
             text-align: center;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             font-family: "Times New Roman", Times, Georgia, serif;
           }
           .title-auth {
@@ -95,17 +105,15 @@ export const DelegateSection: React.FC = () => {
             font-weight: bold;
             color: #0c3e7b;
             text-align: center;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             font-family: "Times New Roman", Times, Georgia, serif;
           }
           .content-text {
             text-align: justify;
-            font-family: "Times New Roman", Times, Georgia, serif;
             font-size: 12.5pt;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            text-indent: 0;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            width: 100%;
           }
           .inline-field {
             border-bottom: 1px solid #000000;
@@ -137,13 +145,15 @@ export const DelegateSection: React.FC = () => {
             text-align: left;
             font-family: "Times New Roman", Times, Georgia, serif;
             font-size: 12.5pt;
-            margin-top: 25px;
-            margin-bottom: 50px;
+            margin-top: 15px;
+            margin-bottom: 30px;
+            width: 100%;
           }
           .signature-section {
-            margin-top: 35px;
-            margin-bottom: 35px;
+            margin-top: 30px;
+            margin-bottom: 30px;
             text-align: center;
+            width: 100%;
           }
           .signature-line {
             width: 280px;
@@ -156,26 +166,29 @@ export const DelegateSection: React.FC = () => {
             font-size: 10.5pt;
             color: #333;
           }
+          .footer-wrapper {
+            width: 100%;
+          }
           .warning-text {
             font-family: "Times New Roman", Times, Georgia, serif;
-            font-size: 8pt;
+            font-size: 8.5pt;
             font-weight: bold;
             color: #111;
             text-align: center;
             line-height: 1.4;
-            margin-top: 35px;
-            margin-bottom: 25px;
+            margin-top: 15px;
+            margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 0.2px;
           }
           .footer-section {
             border-top: 1px solid #cbd5e1;
-            padding-top: 12px;
-            margin-top: 15px;
+            padding-top: 10px;
+            margin-top: 10px;
             text-align: center;
           }
           .footer-section img {
-            height: 32px;
+            height: 30px;
             width: auto;
             display: block;
             margin: 0 auto;
@@ -187,46 +200,52 @@ export const DelegateSection: React.FC = () => {
             .container {
               max-width: 100%;
               padding: 0;
+              height: 100%;
+              min-height: 100%;
             }
           }
         </style>
       </head>
       <body>
         <div class="container">
-          <!-- Official Anniversary 20 SINU Logo -->
-          <img class="logo-anniversary" src="https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/LOGO+DA+SINU+OFC.png" alt="Logo Oficial SINU" />
+          <div class="main-content">
+            <!-- Official Anniversary 20 SINU Logo -->
+            <img class="logo-anniversary" src="https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/LOGO+DA+SINU+OFC.png" alt="Logo Oficial SINU" />
 
-          <!-- Headline -->
-          <div class="sub-header">XX SIMULAÇÃO INTERNA DAS NAÇÕES UNIDAS</div>
-          
-          <!-- Document Title -->
-          <div class="title-auth">AUTORIZAÇÃO</div>
+            <!-- Headline -->
+            <div class="sub-header">XX SIMULAÇÃO INTERNA DAS NAÇÕES UNIDAS</div>
+            
+            <!-- Document Title -->
+            <div class="title-auth">AUTORIZAÇÃO</div>
 
-          <!-- Document Text with precise fields and proportional underline blanks -->
-          <div class="content-text">
-            Eu, <span class="guardian-field" style="width: 440px;">${guardianName || '&nbsp;'}</span>, responsável por 
-            <span class="inline-field" style="width: 410px;">${studentName || '&nbsp;'}</span>, autorizo-o(a) a participar da XX Simulação Interna das Nações Unidas (XX SINU), que acontecerá nos dias 28, 29 e 30 de agosto de 2026, nas dependências do Colégio São Luís.
+            <!-- Document Text with precise fields and proportional underline blanks -->
+            <div class="content-text">
+              Eu, <span class="guardian-field" style="width: 440px;">${guardianName || '&nbsp;'}</span>, responsável por 
+              <span class="inline-field" style="width: 410px;">${studentName || '&nbsp;'}</span>, autorizo-o(a) a participar da XX Simulação Interna das Nações Unidas (XX SINU), que acontecerá nos dias 28, 29 e 30 de agosto de 2026, nas dependências do Colégio São Luís.
+            </div>
+
+            <!-- Tel do Responsável Section -->
+            <div class="phone-section">
+              Tel. do Responsável: <span class="guardian-field" style="width: 250px;">${guardianPhone || '&nbsp;'}</span>
+            </div>
+
+            <!-- Signature block exactly centered -->
+            <div class="signature-section">
+              <div class="signature-line"></div>
+              <div class="signature-label">Assinatura do Responsável</div>
+            </div>
           </div>
 
-          <!-- Tel do Responsável Section -->
-          <div class="phone-section">
-            Tel. do Responsável: <span class="guardian-field" style="width: 250px;">${guardianPhone || '&nbsp;'}</span>
-          </div>
+          <div class="footer-wrapper">
+            <!-- Delivery Instruction Deadline Banner -->
+            <div class="warning-text">
+              ESTA AUTORIZAÇÃO DEVERÁ SER ENTREGUE ATÉ O DIA 26 DE JUNHO DE 2026 PARA BEATRIZ PIMENTEL (EMI), PYETRA KUMAR (EMN) OU PARA OS MEMBROS DA SECRETARIA FINANCEIRA: ALICE ANTUNES (EMI), ARTHUR FERREIRA (EMI) OU RAFAELA SANTOS (EMN).
+            </div>
 
-          <!-- Signature block exactly centered -->
-          <div class="signature-section">
-            <div class="signature-line"></div>
-            <div class="signature-label">Assinatura do Responsável</div>
-          </div>
-
-          <!-- Delivery Instruction Deadline Banner -->
-          <div class="warning-text">
-            ESTA AUTORIZAÇÃO DEVERÁ SER ENTREGUE ATÉ O DIA 26 DE JUNHO DE 2026 PARA BEATRIZ PIMENTEL (EMI) OU PYETRA KUMAR (EMN).
-          </div>
-
-          <!-- Bottom Partner Logos mimicking the official layout -->
-          <div class="footer-section">
-            <img src="https://static.saoluis.org/wp-content/uploads/2020/04/colegio-saoluis.png" alt="Colégio São Luís logo" />
+            <!-- Bottom Partner Logos mimicking the official layout -->
+            <div class="footer-section">
+              <img src="https://static.saoluis.org/wp-content/uploads/2020/04/colegio-saoluis.png" alt="Colégio São Luís logo" />
+            </div>
           </div>
         </div>
 
@@ -535,14 +554,14 @@ export const DelegateSection: React.FC = () => {
                   className="w-full bg-un-blue text-white shadow-md hover:bg-un-dark py-4 rounded-xl text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-3 transition-all cursor-pointer select-none border border-transparent hover:border-un-accent"
                 >
                   <Printer className="w-5 h-5 animate-bounce" />
-                  <span>Baixar Autorização Impressa (PDF)</span>
+                  <span>Baixar Autorização (PDF)</span>
                 </button>
 
                 <div className="space-y-4">
                   <div className="flex gap-2.5 items-start">
                     <AlertTriangle className="w-5 h-5 text-un-accent shrink-0 mt-0.5" />
                     <p className="text-xs text-slate-600 leading-normal">
-                      A autorização impressa deve ser entregue presencialmente às responsáveis: <strong className="text-un-dark font-sans">Beatriz Pimentel (EMI)</strong> ou <strong className="text-un-dark font-sans">Pyetra Kumar (EMN)</strong> até o dia <strong>26 de Junho de 2026</strong>.
+                      A autorização impressa deve ser entregue presencialmente às responsáveis <strong className="text-un-dark font-sans">Beatriz Pimentel (EMI)</strong>, <strong className="text-un-dark font-sans">Pyetra Kumar (EMN)</strong> ou aos membros da Secretaria Financeira: <strong className="text-un-dark font-sans">Alice Antunes (EMI)</strong>, <strong className="text-un-dark font-sans">Arthur Ferreira (EMI)</strong> ou <strong className="text-un-dark font-sans">Rafaela Santos (EMN)</strong> até o dia <strong>26 de Junho de 2026</strong>.
                     </p>
                   </div>
                   <div className="flex gap-2.5 items-start border-t border-slate-200 pt-3">
