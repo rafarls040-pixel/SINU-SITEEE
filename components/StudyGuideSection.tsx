@@ -20,14 +20,6 @@ const DEFAULT_GUIDES: Record<string, StudyGuide[]> = {
       fileUrl: 'https://drive.google.com/file/d/1oo89twpwLWaJZTKWKDlyx5XXwP1zWf-D/view?usp=sharing',
       fileSize: 'PDF • XX SINU',
       category: 'Guia Principal'
-    },
-    {
-      id: 'csnu-regras',
-      title: 'Regimento Interno & Regras de Procedimento',
-      description: 'Manual de regras, dinâmicas de votação e procedimentos de debate para os delegados do Conselho de Segurança.',
-      fileUrl: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/guias/Regimento_Interno_CSNU.pdf',
-      fileSize: 'PDF • Documento Oficial',
-      category: 'Regimento'
     }
   ],
   cn: [
@@ -38,14 +30,6 @@ const DEFAULT_GUIDES: Record<string, StudyGuide[]> = {
       fileUrl: 'https://drive.google.com/file/d/1tsLHu4nRm6t6y3euP_4HHxpGsVis65Th/view?usp=sharing',
       fileSize: 'PDF • XX SINU',
       category: 'Guia Principal'
-    },
-    {
-      id: 'cn-regras',
-      title: 'Regimento Interno e Processo Legislativo',
-      description: 'Guia de trâmite de projetos de lei, apresentação de emendas e discursos no Congresso Nacional.',
-      fileUrl: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/guias/Regimento_Interno_CN.pdf',
-      fileSize: 'PDF • Documento Oficial',
-      category: 'Regimento'
     }
   ],
   unodc: [
