@@ -85,6 +85,8 @@ export const DelegateSection: React.FC = () => {
             flex-direction: column;
             align-items: center;
             text-align: center;
+            flex-grow: 1;
+            width: 100%;
           }
           .logo-anniversary {
             margin: 5px auto 10px auto;
@@ -150,7 +152,7 @@ export const DelegateSection: React.FC = () => {
             width: 100%;
           }
           .signature-section {
-            margin-top: 30px;
+            margin-top: auto;
             margin-bottom: 30px;
             text-align: center;
             width: 100%;

@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Fuel, ArrowLeft, FileText, Users, PlayCircle } from 'lucide-react';
+import { ArrowLeft, FileText, Users, PlayCircle, Quote, Fuel, FileDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberCarousel, { Member } from '../components/MemberCarousel';
+import StudyGuideSection from '../components/StudyGuideSection';
 
 const OPEP: React.FC = () => {
   const mesaDiretora: Member[] = [
@@ -17,18 +18,18 @@ const OPEP: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen font-sans selection:bg-[#00FFFF] selection:text-black">
+    <div className="min-h-screen font-sans selection:bg-[#00FFFF] selection:text-black bg-slate-50/50">
       {/* Header/Hero Section */}
-      <header className="relative py-16 md:py-32 overflow-hidden bg-[#002b2b]">
+      <header className="relative py-16 md:py-24 overflow-hidden bg-[#002828]">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#002b2b] via-[#005a5a] to-[#00FFFF]"></div>
-          <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#00FFFF]/30 via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#002828] via-[#004d4d] to-[#008b8b]"></div>
+          <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-300 via-transparent to-transparent"></div>
         </div>
 
-        <div className="max-w-5xl mx-auto px-6 relative z-10">
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
           <Link 
             to="/" 
-            className="inline-flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-sm transition-all duration-300 mb-8 text-xs sm:text-sm font-medium border border-white/20 hover:border-white/40 shadow-sm hover:shadow-md"
+            className="inline-flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-md transition-all duration-300 mb-8 text-xs sm:text-sm font-semibold border border-white/20 hover:border-white/40 shadow-lg hover:scale-105 active:scale-95"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Voltar para o início
@@ -38,134 +39,142 @@ const OPEP: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="flex flex-col md:flex-row items-center md:items-center gap-6 text-center md:text-left"
+            className="flex flex-col md:flex-row items-center md:items-center gap-8 md:gap-12 text-center md:text-left"
           >
-            <div className="flex items-center justify-center w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 shrink-0 drop-shadow-2xl">
+            <div className="relative flex items-center justify-center w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 shrink-0">
+              <div className="absolute inset-0 bg-cyan-400/20 rounded-full blur-2xl -z-10"></div>
               <img 
                 src="https://sinu-csl-site.s3.sa-east-1.amazonaws.com/to-opep/36.png" 
                 alt="Logo OPEP+" 
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-transform duration-500"
                 fetchPriority="high"
                 decoding="async"
               />
             </div>
-            <div>
-              <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-                <span className="text-[#00FFFF] font-bold tracking-widest uppercase text-xs sm:text-sm">
-                  Comitê
-                </span>
+
+            <div className="flex-1 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-cyan-200 font-bold tracking-widest uppercase text-xs">
+                <span>Comitê Especial</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-6xl font-serif font-black text-white drop-shadow-lg mb-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-black text-white drop-shadow-md tracking-tight leading-tight">
                 OPEP+
               </h1>
-              <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-serif font-bold tracking-tight leading-tight uppercase">
-                <span className="text-un-accent font-sans font-black text-[10px] uppercase tracking-[0.4em] block mb-2 opacity-90">Tema Oficial</span>
-                “Guerras regionais e disrupções nos recursos naturais: instrumentalização do petróleo na violação da soberania e da ordem internacional”
-              </p>
+              
+              {/* Theme Callout Box */}
+              <div className="bg-black/35 backdrop-blur-md border border-white/15 p-5 md:p-6 rounded-2xl shadow-2xl relative overflow-hidden text-left">
+                <div className="absolute top-0 left-0 w-1.5 h-full bg-[#00FFFF]"></div>
+                <div className="flex items-start gap-3">
+                  <Quote className="w-6 h-6 text-cyan-300 shrink-0 mt-0.5 opacity-80" />
+                  <div>
+                    <span className="text-cyan-200 font-sans font-black text-[10px] uppercase tracking-[0.3em] block mb-1">Tema Oficial</span>
+                    <p className="text-base sm:text-lg md:text-xl text-white font-serif font-bold leading-snug">
+                      “Guerras regionais e disrupções nos recursos naturais: instrumentalização do petróleo na violação da soberania e da ordem internacional”
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-12 md:py-16 -mt-8 md:-mt-12 relative z-20">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="max-w-6xl mx-auto px-6 py-12 md:py-16 relative z-20">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           
-          {/* Main Content: Theme and Description */}
+          {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
+            {/* Sobre o Comitê Card */}
+            <motion.section 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 min-h-[280px] flex items-center bg-slate-900 group"
+            >
+              <div className="relative z-10 p-8 md:p-10 w-full space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-[#008B8B] rounded-2xl text-white shadow-lg flex items-center justify-center shrink-0">
+                    <Fuel className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-widest text-cyan-300 block">Apresentação</span>
+                    <h2 className="text-2xl md:text-3xl font-serif font-bold text-white drop-shadow-md">Sobre o Comitê</h2>
+                  </div>
+                </div>
+                
+                <p className="text-white/95 leading-relaxed text-sm md:text-base text-justify font-medium drop-shadow-sm pt-2 border-t border-white/10">
+                  A Organização dos Países Exportadores de Petróleo Plus (OPEP+) é uma aliança que inclui os membros da OPEP e outros grandes produtores de petróleo. Seu principal objetivo é coordenar e unificar as políticas petrolíferas de seus países membros para garantir a estabilização dos mercados de petróleo.
+                </p>
+              </div>
+            </motion.section>
+
+            {/* Sobre o Tema Card */}
             <motion.section 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative rounded-3xl overflow-hidden shadow-xl border border-slate-100 min-h-[300px] flex items-center bg-slate-900"
+              className="bg-white rounded-3xl p-8 md:p-10 shadow-xl border border-slate-100 border-l-8 border-l-[#008B8B]"
             >
-              <div className="relative z-10 p-8 md:p-10 w-full">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-white/10 rounded-lg text-white shadow-sm">
-                    <Users className="w-6 h-6" />
-                  </div>
-                  <h2 className="text-2xl font-serif font-bold text-white drop-shadow-md">Sobre o Comitê</h2>
+              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                <div className="p-3 bg-[#008B8B]/10 rounded-2xl text-[#008B8B]">
+                  <FileText className="w-6 h-6 md:w-7 md:h-7" />
                 </div>
-                
-                <div className="space-y-4 text-white leading-relaxed text-justify drop-shadow-sm">
-                  <p className="font-medium">
-                    A Organização dos Países Exportadores de Petróleo Plus (OPEP+) é uma aliança que inclui os membros da OPEP e outros grandes produtores de petróleo. Seu principal objetivo é coordenar e unificar as políticas petrolíferas de seus países membros para garantir a estabilização dos mercados de petróleo.
-                  </p>
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-widest text-slate-400 block mb-0.5">Contexto e Objetivos</span>
+                  <h2 className="text-2xl md:text-3xl font-serif font-bold text-slate-900">Sobre o Tema</h2>
                 </div>
+              </div>
+              
+              <div className="space-y-4 text-slate-700 leading-relaxed text-sm md:text-base text-justify">
+                <p className="font-normal">
+                  Este tema aborda a complexa relação entre conflitos geopolíticos regionais e a segurança energética global. Em um cenário onde o petróleo não é apenas um recurso econômico, mas uma ferramenta de poder político, o comitê discutirá como crises em regiões produtoras podem levar à instrumentalização da oferta de energia. O debate focará nas consequências dessas disrupções para a soberania das nações, a estabilidade da ordem internacional e os desafios enfrentados pelos países exportadores e importadores diante de sanções, bloqueios e volatilidade extrema de preços.
+                </p>
               </div>
             </motion.section>
 
-            {/* Theme Content */}
-            <div className="space-y-8">
-              {/* Theme Text */}
-              <motion.section 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.25 }}
-                className="bg-white rounded-3xl p-8 md:p-10 shadow-xl border border-slate-100"
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-slate-100 rounded-lg text-slate-700">
-                    <FileText className="w-6 h-6" />
-                  </div>
-                  <h2 className="text-2xl font-serif font-bold text-slate-900">Sobre o Tema</h2>
-                </div>
-                
-                <div className="space-y-4 text-slate-600 leading-relaxed text-justify">
-                  <p>
-                    Este tema aborda a complexa relação entre conflitos geopolíticos regionais e a segurança energética global. Em um cenário onde o petróleo não é apenas um recurso econômico, mas uma ferramenta de poder político, o comitê discutirá como crises em regiões produtoras podem levar à instrumentalização da oferta de energia. O debate focará nas consequências dessas disrupções para a soberania das nações, a estabilidade da ordem internacional e os desafios enfrentados pelos países exportadores e importadores diante de sanções, bloqueios e volatilidade extrema de preços.
-                  </p>
-                </div>
-              </motion.section>
+            {/* Study Guide Section (Full Width) */}
+            <StudyGuideSection 
+              committeeId="opep" 
+              committeeName="Organização dos Países Exportadores de Petróleo (OPEP+)" 
+              accentColor="#008B8B" 
+            />
 
-              {/* Theme Video */}
-              <motion.section 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl border border-slate-100 overflow-hidden"
-              >
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="p-3 bg-[#00FFFF]/10 rounded-xl text-[#008B8B] shadow-inner">
-                    <PlayCircle className="w-8 h-8" />
-                  </div>
-                  <div>
-                    <h2 className="text-3xl font-serif font-bold text-slate-900 tracking-tight">Vídeo do Tema</h2>
-                    <p className="text-slate-500 text-sm font-medium">Assista à apresentação oficial do tema da OPEP+</p>
-                  </div>
-                </div>
-                
-                <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl border-4 border-slate-50 bg-slate-900 group">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none z-10"></div>
-                  <iframe 
-                    className="absolute top-0 left-0 w-full h-full z-0"
-                    src="https://www.youtube.com/embed/EVLPOR7E7oQ"
-                    title="Vídeo de Apresentação do Tema"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                </div>
-              </motion.section>
-            </div>
-
-            {/* General Presentation Video Section */}
+            {/* Theme Video */}
             <motion.section 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.35 }}
-              className="bg-white rounded-3xl p-8 md:p-10 shadow-xl border border-slate-100"
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="bg-white rounded-3xl p-8 md:p-10 shadow-xl border border-slate-100 overflow-hidden relative"
             >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-slate-100 rounded-lg text-slate-700">
-                  <PlayCircle className="w-6 h-6" />
+              <div className="absolute top-0 left-0 right-0 h-2 bg-[#008B8B]" />
+              
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-100">
+                <div className="flex items-center gap-4">
+                  <div className="p-3.5 bg-[#008B8B]/10 rounded-2xl text-[#008B8B] shadow-inner">
+                    <PlayCircle className="w-7 h-7 md:w-8 md:h-8" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-widest text-slate-400 block mb-0.5">Apresentação Audiovisual</span>
+                    <h2 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 tracking-tight">Vídeo do Tema</h2>
+                  </div>
                 </div>
-                <h2 className="text-2xl font-serif font-bold text-slate-900">Vídeo de Apresentação</h2>
+                <a
+                  href="https://drive.google.com/file/d/19L-FN_T29BEpQ8m0N72bHcyc9tBWVmaR/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all bg-[#008B8B] shrink-0"
+                >
+                  <FileDown className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span>Baixar Guia (PDF)</span>
+                </a>
               </div>
               
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-slate-900">
+              <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 md:border-8 border-slate-50 bg-slate-900 group">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none z-10"></div>
                 <iframe 
-                  className="absolute top-0 left-0 w-full h-full"
+                  className="absolute top-0 left-0 w-full h-full z-0"
                   src="https://www.youtube.com/embed/EVLPOR7E7oQ"
-                  title="Vídeo Tema OPEP"
+                  title="Vídeo de Apresentação do Tema"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
@@ -174,26 +183,28 @@ const OPEP: React.FC = () => {
           </div>
 
           {/* Sidebar: Directing Board (Mesa Diretora) */}
-          <div className="lg:col-span-1 space-y-8">
+          <div className="lg:col-span-1 space-y-8 sticky top-8">
             <motion.section 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="bg-[#002b2b]/95 rounded-2xl overflow-hidden border-t-4 border-[#00FFFF] relative backdrop-blur-sm transition-all duration-300 group flex flex-col shadow-xl"
+              className="bg-slate-900 text-white rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative p-6 md:p-8"
             >
-              <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#00FFFF]/30 to-transparent pointer-events-none"></div>
-
-              <div className="p-5 flex flex-col relative z-10">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="p-3 bg-[#00FFFF]/20 text-[#00FFFF] rounded-lg group-hover:bg-[#00FFFF] group-hover:text-black transition-all duration-300 shadow-sm">
-                    <Users className="w-6 h-6" />
-                  </div>
-                  <h4 className="text-xl font-serif font-bold leading-tight transition-colors text-white group-hover:text-[#00FFFF]">Mesa Diretora</h4>
+              {/* Accent top gradient bar */}
+              <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#008B8B] via-cyan-400 to-[#008B8B]"></div>
+              
+              <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-slate-800">
+                <div className="p-3 bg-[#008B8B]/20 text-cyan-300 rounded-2xl border border-[#008B8B]/30">
+                  <Users className="w-6 h-6" />
                 </div>
-                
                 <div>
-                  <MemberCarousel members={mesaDiretora} isDark={true} accentColor="bg-[#00FFFF]" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-cyan-300 block">Equipe de Direção</span>
+                  <h3 className="text-xl md:text-2xl font-serif font-bold text-white tracking-tight">Mesa Diretora</h3>
                 </div>
+              </div>
+
+              <div>
+                <MemberCarousel members={mesaDiretora} isDark={true} accentColor="bg-[#008B8B]" />
               </div>
             </motion.section>
           </div>
