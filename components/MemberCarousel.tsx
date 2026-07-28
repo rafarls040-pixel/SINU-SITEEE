@@ -51,7 +51,7 @@ const MemberCarousel: React.FC<MemberCarouselProps> = ({ members, isDark = true,
             className="w-full flex flex-col items-center text-center group"
           >
             {/* Image Container with Glow Frame */}
-            <div className="relative w-36 h-36 md:w-44 md:h-44 mb-4 rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 bg-slate-900 group-hover:border-white/40 transition-all duration-300">
+            <div className="relative w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 mb-3 sm:mb-4 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 bg-slate-900 group-hover:border-white/40 transition-all duration-300">
               {member.image ? (
                 <img 
                   src={member.image} 
@@ -63,15 +63,15 @@ const MemberCarousel: React.FC<MemberCarouselProps> = ({ members, isDark = true,
                 />
               ) : (
                 <div className={`w-full h-full ${isDark ? 'bg-white/10' : 'bg-slate-100'} flex items-center justify-center`}>
-                  <User className={`w-16 h-16 ${isDark ? 'text-white/40' : 'text-slate-400'}`} />
+                  <User className={`w-12 h-12 sm:w-16 sm:h-16 ${isDark ? 'text-white/40' : 'text-slate-400'}`} />
                 </div>
               )}
               
               {/* Shift Badge on image */}
               {member.shift && (
-                <div className="absolute bottom-2 left-2 right-2 flex justify-center">
-                  <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-md">
-                    <Clock className="w-3 h-3 text-amber-400" />
+                <div className="absolute bottom-1.5 sm:bottom-2 left-1.5 sm:left-2 right-1.5 sm:right-2 flex justify-center">
+                  <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-white border border-white/20 shadow-md">
+                    <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-amber-400" />
                     <span>{member.shift}</span>
                   </span>
                 </div>
@@ -79,11 +79,11 @@ const MemberCarousel: React.FC<MemberCarouselProps> = ({ members, isDark = true,
             </div>
             
             {/* Name and Title */}
-            <div className="space-y-1 max-w-[260px] px-2">
-              <h3 className={`text-base md:text-lg font-serif font-bold leading-snug tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <div className="space-y-0.5 sm:space-y-1 max-w-[260px] px-2">
+              <h3 className={`text-sm sm:text-base md:text-lg font-serif font-bold leading-snug tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {member.name}
               </h3>
-              <p className={`text-xs font-medium uppercase tracking-wider ${isDark ? 'text-white/60' : 'text-slate-500'}`}>
+              <p className={`text-[10px] sm:text-xs font-medium uppercase tracking-wider ${isDark ? 'text-white/60' : 'text-slate-500'}`}>
                 Membro da Mesa
               </p>
             </div>
