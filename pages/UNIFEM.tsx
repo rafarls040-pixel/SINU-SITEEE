@@ -7,7 +7,7 @@ import StudyGuideSection from '../components/StudyGuideSection';
 
 const UNIFEM: React.FC = () => {
   const mesaDiretora: Member[] = [
-    { name: 'Fernanda de Faria Pimenta Salles Lopes', shift: 'Integral' },
+    { name: 'Fernanda de Faria Pimenta Salles Lopes', shift: 'Integral', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/fotos+das+mesas+comissao/Fernanda.png' },
     { name: 'Erick Henrique da Silva Andrade', shift: 'Noturno', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Erick.png' },
     { name: 'Rafaela Oliveira dos Santos', shift: 'Noturno', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Rafaela.png' },
     { name: 'Vinícius Porfirio de Souza', shift: 'Noturno', image: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/secretariado/Vinicios.png' }

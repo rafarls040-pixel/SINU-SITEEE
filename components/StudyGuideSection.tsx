@@ -97,7 +97,7 @@ const DEFAULT_GUIDES: Record<string, StudyGuide[]> = {
       id: 'historic-main',
       title: 'Guia de Estudos Oficial - CSH (Histórico)',
       description: 'Dossiê histórico sobre a Crise dos Mísseis de Cuba de outubro de 1962 e o contexto geopolítico da Guerra Fria.',
-      fileUrl: 'https://drive.google.com/file/d/12jMWYkUfd6v_2XSZhUmVhZcd7QjRNeDi/view?usp=sharing',
+      fileUrl: 'https://drive.google.com/file/d/1zxEIGEIt-nA4AUgkvGgFZ1XZTL6IWQCR/view?usp=sharing',
       fileSize: 'PDF • XX SINU',
       category: 'Guia Principal'
     }
