@@ -9,6 +9,7 @@ export interface StudyGuide {
   fileUrl: string;
   fileSize?: string;
   category?: string;
+  comingSoon?: boolean;
 }
 
 const DEFAULT_GUIDES: Record<string, StudyGuide[]> = {
@@ -67,9 +68,10 @@ const DEFAULT_GUIDES: Record<string, StudyGuide[]> = {
       id: 'to-main',
       title: 'Guia de Estudos Oficial - Teatro de Operações',
       description: 'Dossiê tático, cronologia dos fatos da Guerra das Coreias (1950-1953) e mecânicas de simulação de crise.',
-      fileUrl: 'https://drive.google.com/file/d/1td_w6SBFe7FWfzcvmHmg3QEVqKQf-6BG/view?usp=sharing',
-      fileSize: 'PDF • XX SINU',
-      category: 'Guia Principal'
+      fileUrl: '#',
+      fileSize: 'Em breve',
+      category: 'Guia Principal',
+      comingSoon: true
     }
   ],
   pnuma: [
@@ -217,17 +219,26 @@ export const StudyGuideSection: React.FC<StudyGuideSectionProps> = ({
               </div>
 
               <div className="shrink-0 pt-3 sm:pt-4 border-t border-slate-200/80 flex items-center justify-end">
-                <a
-                  href={guide.fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download
-                  className="w-full inline-flex items-center justify-center gap-2 sm:gap-3 px-4 py-3 sm:px-6 sm:py-3.5 rounded-xl font-bold text-xs sm:text-sm md:text-base text-white shadow-lg hover:shadow-xl transition-all transform active:scale-95 group/btn"
-                  style={{ backgroundColor: accentColor }}
-                >
-                  <FileDown className="w-4 h-4 sm:w-5 sm:h-5 group-hover/btn:translate-y-0.5 transition-transform" />
-                  <span>Baixar Guia (PDF)</span>
-                </a>
+                {guide.comingSoon ? (
+                  <button
+                    disabled
+                    className="w-full inline-flex items-center justify-center gap-2 sm:gap-3 px-4 py-3 sm:px-6 sm:py-3.5 rounded-xl font-bold text-xs sm:text-sm md:text-base text-slate-500 bg-slate-200/80 border border-slate-300 cursor-not-allowed shadow-none"
+                  >
+                    <span>Em breve</span>
+                  </button>
+                ) : (
+                  <a
+                    href={guide.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download
+                    className="w-full inline-flex items-center justify-center gap-2 sm:gap-3 px-4 py-3 sm:px-6 sm:py-3.5 rounded-xl font-bold text-xs sm:text-sm md:text-base text-white shadow-lg hover:shadow-xl transition-all transform active:scale-95 group/btn"
+                    style={{ backgroundColor: accentColor }}
+                  >
+                    <FileDown className="w-4 h-4 sm:w-5 sm:h-5 group-hover/btn:translate-y-0.5 transition-transform" />
+                    <span>Baixar Guia (PDF)</span>
+                  </a>
+                )}
               </div>
             </div>
           ))}

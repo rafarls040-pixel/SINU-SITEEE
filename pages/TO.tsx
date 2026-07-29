@@ -157,16 +157,13 @@ const TO: React.FC = () => {
                     <h2 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 tracking-tight">Vídeo do Tema</h2>
                   </div>
                 </div>
-                <a
-                  href="https://drive.google.com/file/d/1td_w6SBFe7FWfzcvmHmg3QEVqKQf-6BG/view?usp=sharing"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download
-                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all bg-[#c84218] shrink-0"
+                <button
+                  disabled
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-slate-500 bg-slate-200/80 border border-slate-300 cursor-not-allowed shrink-0"
                 >
                   <FileDown className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span>Baixar Guia (PDF)</span>
-                </a>
+                  <span>Guia (Em breve)</span>
+                </button>
               </div>
               
               <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 md:border-8 border-slate-50 bg-slate-900 group">
