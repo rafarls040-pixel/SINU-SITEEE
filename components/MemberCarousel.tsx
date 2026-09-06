@@ -16,6 +16,7 @@ interface MemberCarouselProps {
 
 const MemberCarousel: React.FC<MemberCarouselProps> = ({ members, isDark = true, accentColor = 'bg-un-accent' }) => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [failedImages, setFailedImages] = React.useState<Record<string, boolean>>({});
 
   React.useEffect(() => {
     if (members.length <= 1) return;
@@ -37,6 +38,8 @@ const MemberCarousel: React.FC<MemberCarouselProps> = ({ members, isDark = true,
     setCurrentIndex((prev) => (prev - 1 + members.length) % members.length);
   };
 
+  const hasImage = member.image && !failedImages[member.name];
+
   return (
     <div className="w-full flex flex-col items-center">
       {/* Featured Active Director Card */}
@@ -52,13 +55,15 @@ const MemberCarousel: React.FC<MemberCarouselProps> = ({ members, isDark = true,
           >
             {/* Image Container with Glow Frame */}
             <div className="relative w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 mb-3 sm:mb-4 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 bg-slate-900 group-hover:border-white/40 transition-all duration-300">
-              {member.image ? (
+              {hasImage ? (
                 <img 
                   src={member.image} 
                   alt={member.name} 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                  referrerPolicy="no-referrer" 
-                  loading="lazy" 
+                  referrerPolicy="no-referrer"
+                  onError={() => {
+                    setFailedImages((prev) => ({ ...prev, [member.name]: true }));
+                  }}
                   decoding="async" 
                 />
               ) : (
@@ -126,8 +131,16 @@ const MemberCarousel: React.FC<MemberCarouselProps> = ({ members, isDark = true,
               title={m.name}
             >
               <div className="w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden bg-slate-800 border border-white/20">
-                {m.image ? (
-                  <img src={m.image} alt={m.name} className="w-full h-full object-cover" />
+                {m.image && !failedImages[m.name] ? (
+                  <img 
+                    src={m.image} 
+                    alt={m.name} 
+                    className="w-full h-full object-cover" 
+                    referrerPolicy="no-referrer"
+                    onError={() => {
+                      setFailedImages((prev) => ({ ...prev, [m.name]: true }));
+                    }}
+                  />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-white text-xs font-bold">
                     {m.name.charAt(0)}

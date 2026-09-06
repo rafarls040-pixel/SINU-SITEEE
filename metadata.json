@@ -1,5 +1,6 @@
 {
   "name": "SINU - Simulação Interna das Nações Unidas PATROCINADORES",
-  "description": "Landing page oficial para a simulação escolar modelo ONU, com comitês e assistente diplomático IA.",
-  "requestFramePermissions": []
+  "description": "Portal oficial da SINU com comitês, agência de notícias e gazeta da simulação em PDF, área de imprensa e assistente diplomático IA.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

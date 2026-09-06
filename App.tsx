@@ -14,6 +14,7 @@ const Historic = lazy(() => import('./pages/Historic'));
 const CI = lazy(() => import('./pages/CI'));
 const OPEP = lazy(() => import('./pages/OPEP'));
 const TO = lazy(() => import('./pages/TO'));
+const PressNews = lazy(() => import('./pages/PressNews'));
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-un-dark">
@@ -40,6 +41,9 @@ const App: React.FC = () => {
               <Route path="/comite/ci" element={<CI />} />
               <Route path="/comite/opep" element={<OPEP />} />
               <Route path="/comite/to" element={<TO />} />
+              <Route path="/imprensa" element={<PressNews />} />
+              <Route path="/noticias" element={<PressNews />} />
+              <Route path="/gazeta" element={<PressNews />} />
             </Routes>
           </Suspense>
         </div>

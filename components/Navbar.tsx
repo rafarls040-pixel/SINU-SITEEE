@@ -8,6 +8,7 @@ const navLinks = [
   { name: 'Home', href: '#home', highlight: false },
   { name: 'Sobre', href: '#sobre', highlight: false },
   { name: 'Comitês', href: '#comites', highlight: false, hasDropdown: true },
+  { name: 'Notícias SINUXX', href: '/imprensa', highlight: false },
   { name: 'Secretariado', href: '#secretariado', highlight: false },
   { name: 'Legado', href: '#legado', highlight: true },
   { name: 'Parceiros', href: '#parceiros', highlight: false },
@@ -44,6 +45,14 @@ const Navbar: React.FC = () => {
   }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('/')) {
+      e.preventDefault();
+      setIsOpen(false);
+      navigate(href);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (href.startsWith('#')) {
       e.preventDefault();
       setIsOpen(false);

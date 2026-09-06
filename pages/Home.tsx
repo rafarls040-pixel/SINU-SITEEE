@@ -5,6 +5,7 @@ import About from '../components/About';
 import Secretariat from '../components/Secretariat';
 import Committees from '../components/Committees';
 import { DelegateSection } from '../components/DelegateSection';
+import { HomeNewsSection } from '../components/HomeNewsSection';
 import Legacy from '../components/Legacy';
 import Sponsors from '../components/Sponsors';
 import Footer from '../components/Footer';
@@ -17,6 +18,7 @@ const Home: React.FC = () => {
       <About />
       <Committees />
       <Secretariat />
+      <HomeNewsSection />
       <DelegateSection />
       <Legacy />
       <Sponsors />

@@ -30,3 +30,42 @@ export interface ChatMessage {
   text: string;
   isStreaming?: boolean;
 }
+
+export interface NewsArticle {
+  id: string;
+  title: string;
+  subtitle?: string;
+  content: string;
+  category: 'Comitês' | 'Geral' | 'Bastidores' | 'Declarações' | 'Entrevistas' | 'Crise';
+  committee?: string;
+  author: string;
+  authorRole?: string;
+  imageUrl?: string;
+  date: string;
+  time?: string;
+  readingTime?: string;
+  tags?: string[];
+  isPinned?: boolean;
+}
+
+export interface PdfNewspaper {
+  id: string;
+  title: string;
+  edition: string; // e.g., "1ª Edição - Matutino"
+  date: string;
+  description: string;
+  pdfUrl: string; // URL web ou base64 Data URL
+  fileName?: string;
+  coverImageUrl?: string;
+  author?: string;
+  pageCount?: number;
+}
+
+export interface JournalistUser {
+  id: string;
+  name: string;
+  email: string;
+  role: 'Jornalista' | 'Editor-Chefe' | 'Coordenador de Imprensa';
+  avatar?: string;
+  badgeCode: string;
+}
