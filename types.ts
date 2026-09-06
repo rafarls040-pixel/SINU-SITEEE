@@ -31,6 +31,8 @@ export interface ChatMessage {
   isStreaming?: boolean;
 }
 
+export type NewspaperPublisher = 'O UFANISTA' | 'SANS CULOTTES';
+
 export interface NewsArticle {
   id: string;
   title: string;
@@ -38,6 +40,7 @@ export interface NewsArticle {
   content: string;
   category: 'Comitês' | 'Geral' | 'Bastidores' | 'Declarações' | 'Entrevistas' | 'Crise';
   committee?: string;
+  publisher?: NewspaperPublisher;
   author: string;
   authorRole?: string;
   imageUrl?: string;
@@ -58,6 +61,7 @@ export interface PdfNewspaper {
   fileName?: string;
   coverImageUrl?: string;
   author?: string;
+  publisher?: NewspaperPublisher;
   pageCount?: number;
 }
 

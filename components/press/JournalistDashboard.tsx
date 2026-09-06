@@ -8,6 +8,8 @@ import {
   Edit3, 
   CheckCircle2, 
   AlertCircle, 
+  AlertTriangle,
+  X,
   LogOut, 
   Image as ImageIcon, 
   Link as LinkIcon, 
@@ -15,14 +17,13 @@ import {
   User, 
   Layers, 
   Sparkles, 
-  FileDown, 
   RefreshCw,
   DownloadCloud,
   UploadCloud,
   ChevronRight,
   Eye
 } from 'lucide-react';
-import { JournalistUser, NewsArticle, PdfNewspaper } from '../../types';
+import { JournalistUser, NewsArticle, NewspaperPublisher } from '../../types';
 import { newsService } from '../../services/newsService';
 
 interface JournalistDashboardProps {
@@ -30,49 +31,32 @@ interface JournalistDashboardProps {
   onLogout: () => void;
   onDataChanged: () => void;
   onViewArticle?: (article: NewsArticle) => void;
-  onViewPdf?: (pdf: PdfNewspaper) => void;
 }
-
-const PRESET_IMAGES = [
-  { label: 'Plenária ONU', url: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1200&q=80' },
-  { label: 'Debate Diplomático', url: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80' },
-  { label: 'Direitos Humanos', url: 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&w=1200&q=80' },
-  { label: 'Conferência & Microfone', url: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80' },
-  { label: 'Guerra Fria / Crise', url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80' },
-  { label: 'Edição de Jornal Impresso', url: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=800&q=80' },
-];
 
 export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
   user,
   onLogout,
   onDataChanged,
-  onViewArticle,
-  onViewPdf
+  onViewArticle
 }) => {
-  const [activeTab, setActiveTab] = useState<'news' | 'pdf' | 'manage'>('news');
+  const [activeTab, setActiveTab] = useState<'news' | 'manage'>('news');
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  // In-app confirmation dialog states (avoids blocked window.confirm in iframe)
+  const [articleToDelete, setArticleToDelete] = useState<{ id: string; title: string } | null>(null);
+  const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
 
   // Form states for News Article
   const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
   const [newsTitle, setNewsTitle] = useState('');
   const [newsSubtitle, setNewsSubtitle] = useState('');
+  const [newsPublisher, setNewsPublisher] = useState<NewspaperPublisher>('O UFANISTA');
   const [newsCategory, setNewsCategory] = useState<NewsArticle['category']>('Comitês');
   const [newsCommittee, setNewsCommittee] = useState('CSNU');
   const [newsAuthor, setNewsAuthor] = useState(user.name);
   const [newsAuthorRole, setNewsAuthorRole] = useState(user.role);
   const [newsContent, setNewsContent] = useState('');
   const [newsImageUrl, setNewsImageUrl] = useState('');
-  const [newsTags, setNewsTags] = useState('');
-  const [newsIsPinned, setNewsIsPinned] = useState(false);
-
-  // Form states for PDF Newspaper
-  const [pdfTitle, setPdfTitle] = useState('');
-  const [pdfEdition, setPdfEdition] = useState('');
-  const [pdfDescription, setPdfDescription] = useState('');
-  const [pdfUrl, setPdfUrl] = useState('');
-  const [pdfFileName, setPdfFileName] = useState('');
-  const [pdfCoverUrl, setPdfCoverUrl] = useState('');
-  const [pdfPageCount, setPdfPageCount] = useState<number>(4);
 
   const showNotification = (type: 'success' | 'error', message: string) => {
     setFeedback({ type, message });
@@ -80,7 +64,7 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
   };
 
   // Image Upload Handler (converts to base64 Data URL)
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, target: 'news' | 'pdf') => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -92,41 +76,8 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
     const reader = new FileReader();
     reader.onload = (event) => {
       const dataUrl = event.target?.result as string;
-      if (target === 'news') {
-        setNewsImageUrl(dataUrl);
-      } else {
-        setPdfCoverUrl(dataUrl);
-      }
+      setNewsImageUrl(dataUrl);
       showNotification('success', 'Imagem carregada com sucesso!');
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // PDF File Upload Handler (converts to base64 Data URL)
-  const handlePdfUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.type !== 'application/pdf') {
-      showNotification('error', 'Por favor, selecione um arquivo em formato PDF.');
-      return;
-    }
-
-    if (file.size > 8 * 1024 * 1024) {
-      showNotification('error', 'O arquivo PDF deve ter menos de 8MB para armazenamento local. Caso seja maior, use um link do Google Drive.');
-      return;
-    }
-
-    setPdfFileName(file.name);
-    if (!pdfTitle) {
-      setPdfTitle(file.name.replace('.pdf', '').replace(/_/g, ' '));
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      setPdfUrl(dataUrl);
-      showNotification('success', `PDF "${file.name}" carregado com sucesso!`);
     };
     reader.readAsDataURL(file);
   };
@@ -140,10 +91,9 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
       return;
     }
 
-    const tagsArray = newsTags
-      .split(',')
-      .map(t => t.trim())
-      .filter(Boolean);
+    const defaultTags = newsCategory === 'Comitês' && newsCommittee
+      ? [newsCategory, newsCommittee]
+      : [newsCategory, 'SINU XX'];
 
     newsService.saveArticle({
       id: editingArticleId || undefined,
@@ -151,12 +101,13 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
       subtitle: newsSubtitle.trim(),
       category: newsCategory,
       committee: newsCategory === 'Comitês' ? newsCommittee : undefined,
+      publisher: newsPublisher,
       author: newsAuthor.trim() || user.name,
       authorRole: newsAuthorRole.trim() || user.role,
-      imageUrl: newsImageUrl.trim() || PRESET_IMAGES[0].url,
+      imageUrl: newsImageUrl.trim() || 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/icone+dos+comites/CI.png',
       content: newsContent.trim(),
-      tags: tagsArray.length ? tagsArray : ['SINU XX', 'Imprensa'],
-      isPinned: newsIsPinned,
+      tags: defaultTags,
+      isPinned: false,
       date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }),
       time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       readingTime: `${Math.max(1, Math.ceil(newsContent.split(/\s+/).length / 150))} min de leitura`
@@ -164,7 +115,7 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
 
     showNotification(
       'success',
-      editingArticleId ? 'Matéria atualizada com sucesso!' : 'Matéria publicada na Gazeta SINU com sucesso!'
+      editingArticleId ? 'Matéria atualizada com sucesso!' : 'Matéria publicada com sucesso!'
     );
 
     // Reset Form
@@ -172,9 +123,8 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
     setNewsTitle('');
     setNewsSubtitle('');
     setNewsContent('');
-    setNewsTags('');
     setNewsImageUrl('');
-    setNewsIsPinned(false);
+    setNewsPublisher('O UFANISTA');
 
     onDataChanged();
   };
@@ -184,77 +134,49 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
     setEditingArticleId(art.id);
     setNewsTitle(art.title);
     setNewsSubtitle(art.subtitle || '');
+    setNewsPublisher(art.publisher || 'O UFANISTA');
     setNewsCategory(art.category);
     setNewsCommittee(art.committee || 'CSNU');
     setNewsAuthor(art.author);
     setNewsAuthorRole(art.authorRole || '');
     setNewsContent(art.content);
     setNewsImageUrl(art.imageUrl || '');
-    setNewsTags(art.tags?.join(', ') || '');
-    setNewsIsPinned(!!art.isPinned);
     setActiveTab('news');
   };
 
-  // Delete article
+  // Request delete article (opens in-app confirmation modal)
   const handleDeleteArticle = (id: string, title: string) => {
-    if (window.confirm(`Tem certeza que deseja remover a matéria "${title}"?`)) {
-      newsService.deleteArticle(id);
-      showNotification('success', 'Matéria removida.');
-      onDataChanged();
-    }
+    setArticleToDelete({ id, title });
   };
 
-  // Save PDF Newspaper
-  const handleSavePdf = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Confirm and execute article deletion
+  const confirmDeleteArticle = () => {
+    if (!articleToDelete) return;
+    const deletedId = articleToDelete.id;
+    const deletedTitle = articleToDelete.title;
 
-    if (!pdfTitle.trim() || !pdfUrl.trim()) {
-      showNotification('error', 'Título da edição e arquivo ou link PDF são obrigatórios.');
-      return;
+    newsService.deleteArticle(deletedId);
+    showNotification('success', `Matéria "${deletedTitle}" apagada com sucesso.`);
+
+    if (editingArticleId === deletedId) {
+      setEditingArticleId(null);
+      setNewsTitle('');
+      setNewsSubtitle('');
+      setNewsContent('');
+      setNewsImageUrl('');
+      setNewsPublisher('O UFANISTA');
     }
 
-    newsService.savePdfNewspaper({
-      title: pdfTitle.trim(),
-      edition: pdfEdition.trim() || `Edição Especial nº ${newsService.getPdfNewspapers().length + 1}`,
-      description: pdfDescription.trim() || 'Edição oficial diagramada da Gazeta da XX SINU.',
-      pdfUrl: pdfUrl.trim(),
-      fileName: pdfFileName || `${pdfTitle.replace(/\s+/g, '_')}.pdf`,
-      coverImageUrl: pdfCoverUrl.trim() || PRESET_IMAGES[5].url,
-      author: user.name,
-      pageCount: Number(pdfPageCount) || 4,
-      date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
-    });
-
-    showNotification('success', 'Jornal em PDF publicado com sucesso na Gazeta SINU!');
-
-    // Reset PDF Form
-    setPdfTitle('');
-    setPdfEdition('');
-    setPdfDescription('');
-    setPdfUrl('');
-    setPdfFileName('');
-    setPdfCoverUrl('');
-    setPdfPageCount(4);
-
+    setArticleToDelete(null);
     onDataChanged();
   };
 
-  // Delete PDF Newspaper
-  const handleDeletePdf = (id: string, title: string) => {
-    if (window.confirm(`Tem certeza que deseja remover a edição "${title}"?`)) {
-      newsService.deletePdfNewspaper(id);
-      showNotification('success', 'Edição em PDF removida.');
-      onDataChanged();
-    }
-  };
-
-  // Reset defaults
-  const handleResetDefaults = () => {
-    if (window.confirm('Deseja restaurar as notícias e jornais iniciais da SINU?')) {
-      newsService.resetToDefaults();
-      showNotification('success', 'Conteúdo restaurado para o padrão.');
-      onDataChanged();
-    }
+  // Confirm and execute reset to defaults
+  const confirmResetDefaults = () => {
+    newsService.resetToDefaults();
+    showNotification('success', 'Conteúdo restaurado para o padrão.');
+    setIsResetConfirmOpen(false);
+    onDataChanged();
   };
 
   // Backup Export
@@ -288,7 +210,6 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
   };
 
   const articles = newsService.getArticles();
-  const pdfNewspapers = newsService.getPdfNewspapers();
 
   return (
     <div className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
@@ -350,18 +271,6 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
           </button>
 
           <button
-            onClick={() => setActiveTab('pdf')}
-            className={`px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer ${
-              activeTab === 'pdf'
-                ? 'bg-[#fecc00] text-[#03005c] shadow-lg shadow-[#fecc00]/20'
-                : 'bg-white/5 hover:bg-white/10 text-white/80'
-            }`}
-          >
-            <FileDown className="w-4 h-4" />
-            <span>Publicar Jornal em PDF</span>
-          </button>
-
-          <button
             onClick={() => setActiveTab('manage')}
             className={`px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'manage'
@@ -370,7 +279,7 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
             }`}
           >
             <Layers className="w-4 h-4" />
-            <span>Gerenciar Publicações ({articles.length + pdfNewspapers.length})</span>
+            <span>Gerenciar Publicações ({articles.length})</span>
           </button>
         </div>
       </div>
@@ -427,6 +336,74 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
           </div>
 
           <form onSubmit={handleSaveArticle} className="space-y-6">
+            {/* Publisher Choice */}
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5">
+                Editora do Jornal *
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setNewsPublisher('O UFANISTA')}
+                  className={`p-4 rounded-xl border-2 text-left transition-all cursor-pointer flex items-center justify-between ${
+                    newsPublisher === 'O UFANISTA'
+                      ? 'bg-blue-900 border-blue-600 text-white shadow-md ring-2 ring-blue-500/25'
+                      : 'bg-white border-slate-200 hover:border-blue-400 text-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                      newsPublisher === 'O UFANISTA' ? 'border-white bg-blue-500' : 'border-slate-300 bg-white'
+                    }`}>
+                      {newsPublisher === 'O UFANISTA' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                    </div>
+                    <div>
+                      <span className={`font-serif font-black tracking-wide text-sm block ${
+                        newsPublisher === 'O UFANISTA' ? 'text-white' : 'text-blue-950'
+                      }`}>
+                        O UFANISTA
+                      </span>
+                    </div>
+                  </div>
+                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                    newsPublisher === 'O UFANISTA' ? 'bg-blue-700 text-white' : 'bg-blue-100 text-blue-800'
+                  }`}>
+                    Azul
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setNewsPublisher('SANS CULOTTES')}
+                  className={`p-4 rounded-xl border-2 text-left transition-all cursor-pointer flex items-center justify-between ${
+                    newsPublisher === 'SANS CULOTTES'
+                      ? 'bg-[#7a1828] border-[#9b2034] text-white shadow-md ring-2 ring-[#7a1828]/25'
+                      : 'bg-white border-slate-200 hover:border-rose-400 text-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                      newsPublisher === 'SANS CULOTTES' ? 'border-white bg-rose-500' : 'border-slate-300 bg-white'
+                    }`}>
+                      {newsPublisher === 'SANS CULOTTES' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                    </div>
+                    <div>
+                      <span className={`font-serif font-black tracking-wide text-sm block ${
+                        newsPublisher === 'SANS CULOTTES' ? 'text-white' : 'text-[#58121d]'
+                      }`}>
+                        SANS CULOTTES
+                      </span>
+                    </div>
+                  </div>
+                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                    newsPublisher === 'SANS CULOTTES' ? 'bg-[#58121d] text-white' : 'bg-rose-100 text-[#7a1828]'
+                  }`}>
+                    Bordô
+                  </span>
+                </button>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Category */}
               <div>
@@ -532,7 +509,7 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => handleImageUpload(e, 'news')}
+                      onChange={handleImageUpload}
                       className="hidden"
                     />
                   </label>
@@ -552,37 +529,28 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
                 </div>
               </div>
 
-              {/* Preset image buttons */}
-              <div>
-                <span className="text-[11px] font-bold text-slate-500 block mb-2">
-                  Ou selecione uma foto oficial da biblioteca da simulação:
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  {PRESET_IMAGES.map((preset, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setNewsImageUrl(preset.url)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
-                        newsImageUrl === preset.url
-                          ? 'bg-[#03005c] text-white border-[#03005c] shadow-sm'
-                          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
-                      }`}
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {newsImageUrl && (
-                <div className="flex items-center gap-4 pt-2">
-                  <div className="w-24 h-16 rounded-xl overflow-hidden shadow-md border border-slate-200 bg-slate-100">
-                    <img src={newsImageUrl} alt="Prévia" className="w-full h-full object-cover" />
+                <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-20 h-14 rounded-xl overflow-hidden shadow-sm border border-slate-200 bg-slate-100 shrink-0">
+                      <img src={newsImageUrl} alt="Prévia" className="w-full h-full object-cover" />
+                    </div>
+                    <div>
+                      <span className="text-xs text-emerald-700 font-semibold flex items-center gap-1">
+                        <CheckCircle2 className="w-4 h-4" /> Foto selecionada para a matéria
+                      </span>
+                      <span className="text-[11px] text-slate-500 block truncate max-w-xs sm:max-w-sm">
+                        {newsImageUrl.startsWith('data:') ? 'Arquivo carregado do dispositivo' : newsImageUrl}
+                      </span>
+                    </div>
                   </div>
-                  <span className="text-xs text-emerald-700 font-medium flex items-center gap-1">
-                    <CheckCircle2 className="w-4 h-4" /> Foto selecionada com sucesso!
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setNewsImageUrl('')}
+                    className="text-xs text-red-600 hover:text-red-700 font-bold px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors shrink-0 cursor-pointer"
+                  >
+                    Remover foto
+                  </button>
                 </div>
               )}
             </div>
@@ -620,234 +588,53 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
               </p>
             </div>
 
-            {/* Tags and Options */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                  Tags / Palavras-chave (separadas por vírgula)
-                </label>
-                <input
-                  type="text"
-                  value={newsTags}
-                  onChange={(e) => setNewsTags(e.target.value)}
-                  placeholder="ex: CSNU, Veto, América Latina, Resolução"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-[#03005c]"
-                />
-              </div>
-
-              <div className="pt-4 sm:pt-6">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={newsIsPinned}
-                    onChange={(e) => setNewsIsPinned(e.target.checked)}
-                    className="w-4 h-4 rounded text-[#03005c] focus:ring-[#03005c]"
-                  />
-                  <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                    Fixar notícia em destaque principal no topo
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
-              <button
-                type="submit"
-                className="px-8 py-3.5 rounded-xl bg-[#03005c] hover:bg-[#050080] text-white font-bold text-sm shadow-xl shadow-[#03005c]/25 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
-              >
-                <CheckCircle2 className="w-5 h-5 text-[#fecc00]" />
-                <span>{editingArticleId ? 'Salvar Alterações' : 'Publicar Matéria Agora'}</span>
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* TAB CONTENT 2: POST PDF NEWSPAPER */}
-      {activeTab === 'pdf' && (
-        <div className="p-6 sm:p-10 space-y-8">
-          <div className="border-b border-slate-100 pb-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Edições Impressas & Diagramadas
-            </span>
-            <h3 className="text-2xl font-serif font-bold text-slate-900">
-              Disponibilizar Jornal em PDF (Gazeta SINU)
-            </h3>
-            <p className="text-xs text-slate-500 mt-1">
-              Faça o upload do arquivo PDF oficial do jornal da simulação ou insira o link de compartilhamento (Google Drive, S3 ou site).
-            </p>
-          </div>
-
-          <form onSubmit={handleSavePdf} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Title */}
-              <div className="md:col-span-2">
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                  Título da Edição *
-                </label>
-                <input
-                  type="text"
-                  value={pdfTitle}
-                  onChange={(e) => setPdfTitle(e.target.value)}
-                  placeholder="ex: Gazeta SINU XX • 1ª Edição: Abertura e Primeiras Moções"
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 font-bold text-sm focus:outline-none focus:border-[#03005c]"
-                />
-              </div>
-
-              {/* Edition tag */}
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                  Número / Nome da Edição
-                </label>
-                <input
-                  type="text"
-                  value={pdfEdition}
-                  onChange={(e) => setPdfEdition(e.target.value)}
-                  placeholder="ex: Edição nº 02 - Vespertino"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-[#03005c]"
-                />
-              </div>
-            </div>
-
-            {/* Description */}
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                Resumo Editorial / Descrição da Edição
-              </label>
-              <textarea
-                value={pdfDescription}
-                onChange={(e) => setPdfDescription(e.target.value)}
-                rows={3}
-                placeholder="Breve descrição dos principais artigos, entrevistas e colunas presentes nesta edição do jornal impresso."
-                className="w-full p-3 rounded-xl border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-[#03005c]"
-              />
-            </div>
-
-            {/* PDF File Source Box */}
-            <div className="p-6 rounded-2xl bg-amber-50/50 border border-amber-200/70 space-y-4">
-              <div className="flex items-center gap-2 text-amber-900">
-                <FileDown className="w-5 h-5 text-[#03005c]" />
-                <span className="text-xs font-bold uppercase tracking-wider">
-                  Arquivo PDF do Jornal *
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Upload PDF */}
-                <div className="space-y-2">
-                  <span className="text-xs font-bold text-slate-700 block">
-                    Opção A: Upload direto do arquivo PDF (.pdf)
-                  </span>
-                  <label className="flex flex-col items-center justify-center p-4 rounded-xl border-2 border-dashed border-amber-300 hover:border-[#03005c] bg-white cursor-pointer transition-colors text-center">
-                    <Upload className="w-6 h-6 text-[#03005c] mb-1" />
-                    <span className="text-xs font-bold text-slate-800">
-                      {pdfFileName ? pdfFileName : 'Selecionar arquivo .PDF'}
-                    </span>
-                    <span className="text-[10px] text-slate-400 mt-0.5">
-                      Tamanho máximo recomendado: 8MB
-                    </span>
-                    <input
-                      type="file"
-                      accept="application/pdf"
-                      onChange={handlePdfUpload}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-
-                {/* Or Google Drive / Web URL */}
-                <div className="space-y-2">
-                  <span className="text-xs font-bold text-slate-700 block">
-                    Opção B: Ou cole o link do Google Drive / Web
-                  </span>
-                  <div className="relative">
-                    <input
-                      type="url"
-                      value={pdfUrl.startsWith('data:') ? '' : pdfUrl}
-                      onChange={(e) => {
-                        setPdfUrl(e.target.value);
-                        setPdfFileName('Jornal_SINU_Online.pdf');
-                      }}
-                      placeholder="https://drive.google.com/file/d/.../view"
-                      className="w-full pl-9 pr-4 py-3 rounded-xl border border-slate-200 text-slate-800 text-xs bg-white focus:outline-none focus:border-[#03005c]"
-                    />
-                    <LinkIcon className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                  </div>
-                  <p className="text-[10px] text-slate-500">
-                    Insira o link público do Google Drive ou link direto para o PDF.
-                  </p>
-                </div>
-              </div>
-
-              {pdfUrl && (
-                <div className="p-3 rounded-xl bg-white border border-emerald-200 flex items-center justify-between text-xs text-emerald-800">
-                  <span className="font-bold flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    Arquivo PDF pronto para publicação!
-                  </span>
-                  <span className="text-[11px] text-slate-500 font-mono truncate max-w-xs">
-                    {pdfFileName || 'arquivo_selecionado.pdf'}
-                  </span>
-                </div>
+            {/* Submit & Action Buttons */}
+            <div className="pt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100">
+              {editingArticleId ? (
+                <button
+                  type="button"
+                  onClick={() => setArticleToDelete({ id: editingArticleId, title: newsTitle || 'esta matéria' })}
+                  className="px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer border border-red-200"
+                  title="Excluir esta matéria permanentemente"
+                >
+                  <Trash2 className="w-4 h-4 text-red-600" />
+                  <span>Excluir Notícia</span>
+                </button>
+              ) : (
+                <div />
               )}
-            </div>
 
-            {/* Cover Image for the Newspaper */}
-            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
-                Capa Ilustrativa do Jornal
-              </label>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <span className="text-[11px] font-bold text-slate-500 block mb-1">
-                    Upload de Imagem da Capa
-                  </span>
-                  <label className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 cursor-pointer text-xs font-bold text-slate-700 transition-colors">
-                    <ImageIcon className="w-4 h-4 text-[#03005c]" />
-                    <span>Upload da foto da capa</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleImageUpload(e, 'pdf')}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-
-                <div>
-                  <span className="text-[11px] font-bold text-slate-500 block mb-1">
-                    Número Estimado de Páginas
-                  </span>
-                  <input
-                    type="number"
-                    min="1"
-                    max="60"
-                    value={pdfPageCount}
-                    onChange={(e) => setPdfPageCount(Number(e.target.value))}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-xs bg-white focus:outline-none focus:border-[#03005c]"
-                  />
-                </div>
+              <div className="flex items-center gap-3">
+                {editingArticleId && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingArticleId(null);
+                      setNewsTitle('');
+                      setNewsSubtitle('');
+                      setNewsContent('');
+                      setNewsImageUrl('');
+                      setNewsPublisher('O UFANISTA');
+                    }}
+                    className="px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+                  >
+                    Cancelar Edição
+                  </button>
+                )}
+                <button
+                  type="submit"
+                  className="px-8 py-3.5 rounded-xl bg-[#03005c] hover:bg-[#050080] text-white font-bold text-sm shadow-xl shadow-[#03005c]/25 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <CheckCircle2 className="w-5 h-5 text-[#fecc00]" />
+                  <span>{editingArticleId ? 'Salvar Alterações' : 'Publicar Matéria Agora'}</span>
+                </button>
               </div>
-            </div>
-
-            {/* Submit Button */}
-            <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
-              <button
-                type="submit"
-                className="px-8 py-3.5 rounded-xl bg-[#03005c] hover:bg-[#050080] text-white font-bold text-sm shadow-xl shadow-[#03005c]/25 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
-              >
-                <FileDown className="w-5 h-5 text-[#fecc00]" />
-                <span>Publicar Edição em PDF na Gazeta</span>
-              </button>
             </div>
           </form>
         </div>
       )}
 
-      {/* TAB CONTENT 3: MANAGE PUBLICATIONS */}
+      {/* TAB CONTENT 2: MANAGE PUBLICATIONS */}
       {activeTab === 'manage' && (
         <div className="p-6 sm:p-10 space-y-10">
           {/* Header */}
@@ -857,7 +644,7 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
                 Acervo da Imprensa
               </span>
               <h3 className="text-2xl font-serif font-bold text-slate-900">
-                Gerenciamento de Matérias e Jornais
+                Gerenciamento de Matérias
               </h3>
             </div>
 
@@ -885,7 +672,7 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
 
               <button
                 type="button"
-                onClick={handleResetDefaults}
+                onClick={() => setIsResetConfirmOpen(true)}
                 className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-700 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
                 title="Restaurar notícias e jornais de demonstração"
               >
@@ -925,6 +712,15 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
                       )}
                       <div>
                         <div className="flex items-center gap-2 mb-1">
+                          {art.publisher && (
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${
+                              art.publisher === 'O UFANISTA'
+                                ? 'bg-blue-100 text-blue-800 border border-blue-200'
+                                : 'bg-rose-100 text-[#7a1828] border border-rose-200'
+                            }`}>
+                              {art.publisher}
+                            </span>
+                          )}
                           <span className="px-2 py-0.5 bg-[#03005c]/10 text-[#03005c] rounded text-[10px] font-bold uppercase">
                             {art.category}
                           </span>
@@ -983,87 +779,83 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
               </div>
             )}
           </div>
+        </div>
+      )}
 
-          {/* Section: PDF Newspapers */}
-          <div className="space-y-4 pt-6 border-t border-slate-100">
-            <h4 className="text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
-              <FileDown className="w-5 h-5 text-[#03005c]" />
-              Edições em PDF Publicadas ({pdfNewspapers.length})
-            </h4>
+      {/* Modal de Confirmação para Apagar Matéria */}
+      {articleToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 text-center space-y-5 animate-in fade-in zoom-in-95 duration-150">
+            <div className="w-16 h-16 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mx-auto border border-red-100 shadow-sm">
+              <Trash2 className="w-8 h-8" />
+            </div>
 
-            {pdfNewspapers.length === 0 ? (
-              <p className="text-xs text-slate-400 italic">Nenhum jornal em PDF publicado ainda.</p>
-            ) : (
-              <div className="divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden">
-                {pdfNewspapers.map((pdf) => (
-                  <div
-                    key={pdf.id}
-                    className="p-4 bg-white hover:bg-slate-50/80 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-                  >
-                    <div className="flex items-start gap-3">
-                      {pdf.coverImageUrl ? (
-                        <img
-                          src={pdf.coverImageUrl}
-                          alt={pdf.title}
-                          className="w-12 h-16 rounded object-cover shrink-0 border border-slate-200 shadow-sm"
-                        />
-                      ) : (
-                        <div className="w-12 h-16 rounded bg-slate-100 flex items-center justify-center text-slate-400 shrink-0">
-                          <FileText className="w-6 h-6" />
-                        </div>
-                      )}
-                      <div>
-                        <span className="px-2 py-0.5 bg-amber-100 text-amber-900 rounded text-[10px] font-bold uppercase block w-max mb-1">
-                          {pdf.edition}
-                        </span>
-                        <h5 className="font-bold text-slate-900 text-sm line-clamp-1">
-                          {pdf.title}
-                        </h5>
-                        <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
-                          {pdf.description}
-                        </p>
-                        <span className="text-[11px] text-slate-400 mt-1 block">
-                          Publicado em {pdf.date} • {pdf.pageCount || 4} páginas
-                        </span>
-                      </div>
-                    </div>
+            <div className="space-y-2">
+              <h4 className="text-xl font-serif font-bold text-slate-900">
+                Apagar Notícia?
+              </h4>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Tem certeza que deseja apagar a matéria <strong className="text-slate-900">"{articleToDelete.title}"</strong>? Esta ação não pode ser desfeita e a notícia será removida imediatamente da cobertura oficial.
+              </p>
+            </div>
 
-                    <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                      {onViewPdf && (
-                        <button
-                          type="button"
-                          onClick={() => onViewPdf(pdf)}
-                          className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
-                          title="Visualizar PDF"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                      )}
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setArticleToDelete(null)}
+                className="flex-1 py-3 px-4 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+              >
+                Cancelar
+              </button>
 
-                      <a
-                        href={pdf.pdfUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        download={pdf.fileName || 'Gazeta_SINU.pdf'}
-                        className="p-2 rounded-xl bg-slate-100 hover:bg-amber-50 text-slate-700 hover:text-amber-800 transition-colors cursor-pointer"
-                        title="Baixar arquivo PDF"
-                      >
-                        <FileDown className="w-4 h-4" />
-                      </a>
+              <button
+                type="button"
+                onClick={confirmDeleteArticle}
+                className="flex-1 py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-lg shadow-red-600/25 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Sim, apagar notícia</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-                      <button
-                        type="button"
-                        onClick={() => handleDeletePdf(pdf.id, pdf.title)}
-                        className="p-2 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-700 transition-colors cursor-pointer"
-                        title="Excluir edição em PDF"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+      {/* Modal de Confirmação para Restaurar Padrão */}
+      {isResetConfirmOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 text-center space-y-5 animate-in fade-in zoom-in-95 duration-150">
+            <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-100 shadow-sm">
+              <RefreshCw className="w-8 h-8" />
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="text-xl font-serif font-bold text-slate-900">
+                Restaurar Conteúdo Padrão?
+              </h4>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Deseja restaurar as notícias da SINU para o padrão de demonstração? Matérias criadas recentemente serão substituídas.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setIsResetConfirmOpen(false)}
+                className="flex-1 py-3 px-4 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                onClick={confirmResetDefaults}
+                className="flex-1 py-3 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-lg shadow-amber-600/25 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <RefreshCw className="w-4 h-4" />
+                <span>Restaurar</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

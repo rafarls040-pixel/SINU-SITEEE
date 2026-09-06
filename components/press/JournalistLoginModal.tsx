@@ -72,7 +72,7 @@ export const JournalistLoginModal: React.FC<JournalistLoginModalProps> = ({
             </div>
           </div>
           <p className="text-xs text-white/80 leading-relaxed mt-1">
-            Entre com suas credenciais de imprensa para postar reportagens e gerenciar os jornais em PDF da XX SINU.
+            Entre com suas credenciais de imprensa para postar e gerenciar a cobertura jornalística da XX SINU.
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export const JournalistLoginModal: React.FC<JournalistLoginModalProps> = ({
                   type="text"
                   value={credential}
                   onChange={(e) => setCredential(e.target.value)}
-                  placeholder="Digite o login de imprensa"
+                  placeholder="COMITE-de-IMPRENSA"
                   required
                   autoFocus
                   className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-[#03005c] focus:ring-2 focus:ring-[#03005c]/10 transition-all placeholder:text-slate-400"

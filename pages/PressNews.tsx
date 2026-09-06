@@ -4,8 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Newspaper, 
   FileText, 
-  Download, 
-  Eye, 
   Search, 
   Filter, 
   Calendar, 
@@ -16,17 +14,16 @@ import {
   Sparkles, 
   ChevronRight, 
   Tag, 
-  FileDown,
-  Layers,
-  ShieldCheck,
-  Share2
+  Layers, 
+  ShieldCheck, 
+  Share2,
+  Trash2
 } from 'lucide-react';
 import SinuLogo from '../components/SinuLogo';
 import { newsService } from '../services/newsService';
-import { NewsArticle, PdfNewspaper, JournalistUser } from '../types';
+import { NewsArticle, JournalistUser, NewspaperPublisher } from '../types';
 import { JournalistLoginModal } from '../components/press/JournalistLoginModal';
 import { ArticleDetailModal } from '../components/press/ArticleDetailModal';
-import { PdfViewerModal } from '../components/press/PdfViewerModal';
 import { JournalistDashboard } from '../components/press/JournalistDashboard';
 
 const CATEGORIES = ['Todas', 'Comitês', 'Geral', 'Bastidores', 'Declarações', 'Crise'];
@@ -35,36 +32,46 @@ const COMMITTEES = ['Todos', 'CSNU', 'CSH', 'UNODC', 'CDH', 'UNIFEM', 'TO', 'PNU
 export const PressNews: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [articles, setArticles] = useState<NewsArticle[]>([]);
-  const [pdfNewspapers, setPdfNewspapers] = useState<PdfNewspaper[]>([]);
   const [currentJournalist, setCurrentJournalist] = useState<JournalistUser | null>(null);
 
   // Navigation & filter states
-  const [activeMainTab, setActiveMainTab] = useState<'news' | 'pdfs' | 'dashboard'>('news');
+  const [activeMainTab, setActiveMainTab] = useState<'news' | 'dashboard'>('news');
+  const [selectedPublisher, setSelectedPublisher] = useState<'Todas' | NewspaperPublisher>('Todas');
   const [selectedCategory, setSelectedCategory] = useState('Todas');
   const [selectedCommittee, setSelectedCommittee] = useState('Todos');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Modals
+  // Modals & Delete Confirmation
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [selectedArticleForDetail, setSelectedArticleForDetail] = useState<NewsArticle | null>(null);
-  const [selectedPdfForViewer, setSelectedPdfForViewer] = useState<PdfNewspaper | null>(null);
+  const [articleToDelete, setArticleToDelete] = useState<{ id: string; title: string } | null>(null);
 
   const loadData = () => {
     setArticles(newsService.getArticles());
-    setPdfNewspapers(newsService.getPdfNewspapers());
     setCurrentJournalist(newsService.getJournalistSession());
+  };
+
+  const handleDeleteArticle = (id: string, title: string) => {
+    setArticleToDelete({ id, title });
+  };
+
+  const confirmDeleteArticle = () => {
+    if (!articleToDelete) return;
+    newsService.deleteArticle(articleToDelete.id);
+    if (selectedArticleForDetail?.id === articleToDelete.id) {
+      setSelectedArticleForDetail(null);
+    }
+    setArticleToDelete(null);
+    loadData();
   };
 
   useEffect(() => {
     document.title = 'Notícias SINUXX';
     loadData();
 
-    // If query param ?action=login or ?tab=pdfs is present
+    // If query param ?action=login is present
     if (searchParams.get('action') === 'login') {
       setIsLoginModalOpen(true);
-    }
-    if (searchParams.get('tab') === 'pdfs') {
-      setActiveMainTab('pdfs');
     }
     if (searchParams.get('tab') === 'dashboard') {
       setActiveMainTab('dashboard');
@@ -81,6 +88,7 @@ export const PressNews: React.FC = () => {
 
   // Filter articles
   const filteredArticles = articles.filter(art => {
+    const matchesPublisher = selectedPublisher === 'Todas' || art.publisher === selectedPublisher;
     const matchesCategory = selectedCategory === 'Todas' || art.category === selectedCategory;
     const matchesCommittee = selectedCommittee === 'Todos' || art.committee === selectedCommittee || (!art.committee && selectedCommittee === 'Todos');
     const matchesQuery = 
@@ -89,11 +97,11 @@ export const PressNews: React.FC = () => {
       (art.subtitle && art.subtitle.toLowerCase().includes(searchQuery.toLowerCase())) ||
       art.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
       art.author.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesCommittee && matchesQuery;
+    return matchesPublisher && matchesCategory && matchesCommittee && matchesQuery;
   });
 
   // Pinned or latest highlight article
-  const pinnedArticle = articles.find(a => a.isPinned) || articles[0];
+  const pinnedArticle = filteredArticles.find(a => a.isPinned) || filteredArticles[0];
   const regularArticles = filteredArticles.filter(a => a.id !== (pinnedArticle ? pinnedArticle.id : ''));
 
   return (
@@ -185,7 +193,7 @@ export const PressNews: React.FC = () => {
                 Notícias SINUXX
               </h2>
               <p className="text-sm sm:text-base text-white/80 leading-relaxed font-sans font-normal">
-                Acompanhe a cobertura completa dos 10 comitês, declarações de delegados, crises diplomáticas e leia as edições diagramadas da Gazeta SINU em formato digital.
+                Acompanhe a cobertura completa dos comitês, declarações de delegados e crises diplomáticas com a cobertura das editoras <strong>O UFANISTA</strong> e <strong>SANS CULOTTES</strong>.
               </p>
             </div>
 
@@ -196,8 +204,8 @@ export const PressNews: React.FC = () => {
                 <span className="text-[10px] font-bold uppercase tracking-wider text-white/70">Matérias</span>
               </div>
               <div className="text-center px-3">
-                <span className="block text-2xl font-black text-[#fecc00]">{pdfNewspapers.length}</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-white/70">Edições PDF</span>
+                <span className="block text-2xl font-black text-[#fecc00]">2</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-white/70">Editoras</span>
               </div>
             </div>
           </div>
@@ -214,18 +222,6 @@ export const PressNews: React.FC = () => {
             >
               <Newspaper className="w-4 h-4" />
               <span>Notícias SINUXX ({articles.length})</span>
-            </button>
-
-            <button
-              onClick={() => setActiveMainTab('pdfs')}
-              className={`px-6 py-3 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer ${
-                activeMainTab === 'pdfs'
-                  ? 'bg-[#fecc00] text-[#03005c] shadow-lg'
-                  : 'bg-white/10 text-white/90 hover:bg-white/20'
-              }`}
-            >
-              <FileDown className="w-4 h-4" />
-              <span>Jornais em PDF • Gazeta ({pdfNewspapers.length})</span>
             </button>
 
             {currentJournalist && (
@@ -256,131 +252,11 @@ export const PressNews: React.FC = () => {
               onLogout={handleLogout}
               onDataChanged={loadData}
               onViewArticle={(art) => setSelectedArticleForDetail(art)}
-              onViewPdf={(pdf) => setSelectedPdfForViewer(pdf)}
             />
           </div>
         )}
 
-        {/* 2. PDF NEWSPAPERS SECTION */}
-        {activeMainTab === 'pdfs' && (
-          <div className="space-y-8">
-            {/* Banner card */}
-            <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="space-y-2">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#03005c] block">
-                  Edições Diagramadas & Impressas
-                </span>
-                <h3 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900">
-                  Gazeta SINU • Jornais Oficiais em PDF
-                </h3>
-                <p className="text-sm text-slate-600 max-w-2xl leading-relaxed">
-                  Consulte ou baixe todas as edições diárias, edições especiais e dossiês produzidos pela imprensa da XX SINU. Você pode visualizar diretamente no navegador ou fazer o download no seu dispositivo.
-                </p>
-              </div>
-
-              {currentJournalist ? (
-                <button
-                  onClick={() => setActiveMainTab('dashboard')}
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#03005c] hover:bg-[#050080] text-white text-xs font-bold shadow-lg transition-all shrink-0 cursor-pointer"
-                >
-                  <FileDown className="w-4 h-4 text-[#fecc00]" />
-                  <span>+ Adicionar Novo Jornal em PDF</span>
-                </button>
-              ) : (
-                <button
-                  onClick={() => setIsLoginModalOpen(true)}
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all shrink-0 cursor-pointer"
-                >
-                  <Lock className="w-4 h-4 text-[#03005c]" />
-                  <span>É da imprensa? Faça login para postar</span>
-                </button>
-              )}
-            </div>
-
-            {/* Grid of PDF Newspapers */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {pdfNewspapers.map((newspaper) => (
-                <motion.div
-                  key={newspaper.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-slate-200/80 transition-all flex flex-col group"
-                >
-                  {/* Newspaper Cover Preview */}
-                  <div className="relative aspect-[3/4] max-h-72 overflow-hidden bg-slate-900">
-                    <img
-                      src={newspaper.coverImageUrl || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=800&q=80'}
-                      alt={newspaper.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
-                    
-                    {/* Badge top */}
-                    <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
-                      <span className="px-3 py-1 bg-[#fecc00] text-[#03005c] rounded-full text-xs font-black uppercase tracking-wider shadow-md">
-                        {newspaper.edition}
-                      </span>
-                      {newspaper.pageCount && (
-                        <span className="px-2.5 py-1 bg-black/60 backdrop-blur-md text-white rounded-full text-xs font-bold">
-                          {newspaper.pageCount} páginas
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Bottom overlay title */}
-                    <div className="absolute bottom-4 left-4 right-4 text-white">
-                      <span className="text-[10px] uppercase font-bold text-[#fecc00] block mb-1">
-                        Publicado em {newspaper.date}
-                      </span>
-                      <h4 className="font-serif font-bold text-lg leading-snug line-clamp-2 drop-shadow-md">
-                        {newspaper.title}
-                      </h4>
-                    </div>
-                  </div>
-
-                  {/* Body description */}
-                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-3">
-                      {newspaper.description}
-                    </p>
-
-                    {/* Action buttons */}
-                    <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
-                      <button
-                        onClick={() => setSelectedPdfForViewer(newspaper)}
-                        className="flex-1 py-2.5 px-4 rounded-xl bg-[#03005c] hover:bg-[#050080] text-white text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-md"
-                      >
-                        <Eye className="w-4 h-4 text-[#fecc00]" />
-                        <span>Ler Jornal Online</span>
-                      </button>
-
-                      <a
-                        href={newspaper.pdfUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        download={newspaper.fileName || 'Gazeta_SINU.pdf'}
-                        className="p-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
-                        title="Baixar arquivo PDF"
-                      >
-                        <Download className="w-4 h-4" />
-                      </a>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {pdfNewspapers.length === 0 && (
-              <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 p-8">
-                <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                <h4 className="font-serif font-bold text-lg text-slate-700">Nenhum jornal em PDF publicado</h4>
-                <p className="text-xs text-slate-500 mt-1">Utilize a área do jornalista para postar a primeira edição.</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* 3. NEWS ARTICLES SECTION */}
+        {/* 2. NEWS ARTICLES SECTION */}
         {activeMainTab === 'news' && (
           <div className="space-y-10">
             {articles.length === 0 ? (
@@ -419,7 +295,48 @@ export const PressNews: React.FC = () => {
             ) : (
               <>
             {/* Filter & Search Bar */}
-            <div className="bg-white rounded-3xl p-6 shadow-lg border border-slate-200 space-y-4">
+            <div className="bg-white rounded-3xl p-6 shadow-lg border border-slate-200 space-y-5">
+              {/* Publisher Selector */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                  Editora do Jornal:
+                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <button
+                    onClick={() => setSelectedPublisher('Todas')}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      selectedPublisher === 'Todas'
+                        ? 'bg-slate-900 text-white shadow-sm'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                    }`}
+                  >
+                    Todas ({articles.length})
+                  </button>
+                  <button
+                    onClick={() => setSelectedPublisher('O UFANISTA')}
+                    className={`px-4 py-2 rounded-xl text-xs font-serif font-black tracking-wide transition-all cursor-pointer flex items-center gap-1.5 ${
+                      selectedPublisher === 'O UFANISTA'
+                        ? 'bg-blue-700 text-white shadow-md ring-2 ring-blue-400/40'
+                        : 'bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200'
+                    }`}
+                  >
+                    <span className="w-2 h-2 rounded-full bg-blue-500" />
+                    <span>O UFANISTA</span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedPublisher('SANS CULOTTES')}
+                    className={`px-4 py-2 rounded-xl text-xs font-serif font-black tracking-wide transition-all cursor-pointer flex items-center gap-1.5 ${
+                      selectedPublisher === 'SANS CULOTTES'
+                        ? 'bg-[#7a1828] text-white shadow-md ring-2 ring-rose-400/40'
+                        : 'bg-rose-50 hover:bg-rose-100 text-[#7a1828] border border-rose-200'
+                    }`}
+                  >
+                    <span className="w-2 h-2 rounded-full bg-rose-500" />
+                    <span>SANS CULOTTES</span>
+                  </button>
+                </div>
+              </div>
+
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 {/* Search input */}
                 <div className="relative flex-1">
@@ -482,13 +399,36 @@ export const PressNews: React.FC = () => {
                     alt={pinnedArticle.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute top-4 left-4 flex items-center gap-2">
+                  <div className="absolute top-4 left-4 flex items-center gap-2 flex-wrap">
+                    {pinnedArticle.publisher && (
+                      <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-md ${
+                        pinnedArticle.publisher === 'O UFANISTA'
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-[#7a1828] text-white'
+                      }`}>
+                        {pinnedArticle.publisher}
+                      </span>
+                    )}
                     <span className="px-3 py-1 bg-[#fecc00] text-[#03005c] rounded-full text-xs font-black uppercase tracking-wider shadow-md">
                       Destaque Principal
                     </span>
                     <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-white rounded-full text-xs font-bold uppercase">
                       {pinnedArticle.category}
                     </span>
+                    {currentJournalist && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteArticle(pinnedArticle.id, pinnedArticle.title);
+                        }}
+                        className="ml-auto px-3 py-1 bg-red-600/90 hover:bg-red-700 text-white rounded-full text-xs font-bold transition-all shadow-md flex items-center gap-1 cursor-pointer"
+                        title="Excluir notícia"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Apagar</span>
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -576,7 +516,16 @@ export const PressNews: React.FC = () => {
                             <FileText className="w-8 h-8" />
                           </div>
                         )}
-                        <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                        <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
+                          {article.publisher && (
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm ${
+                              article.publisher === 'O UFANISTA'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-[#7a1828] text-white'
+                            }`}>
+                              {article.publisher}
+                            </span>
+                          )}
                           <span className="px-2.5 py-0.5 bg-black/70 backdrop-blur-md text-white rounded-full text-[11px] font-bold uppercase">
                             {article.category}
                           </span>
@@ -586,6 +535,22 @@ export const PressNews: React.FC = () => {
                             </span>
                           )}
                         </div>
+
+                        {currentJournalist && (
+                          <div className="absolute top-3 right-3 z-10">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteArticle(article.id, article.title);
+                              }}
+                              className="p-1.5 rounded-full bg-white/90 hover:bg-red-600 text-slate-700 hover:text-white shadow-md backdrop-blur-sm transition-colors cursor-pointer"
+                              title="Excluir notícia"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        )}
                       </div>
 
                       {/* Content */}
@@ -654,12 +619,47 @@ export const PressNews: React.FC = () => {
       <ArticleDetailModal
         article={selectedArticleForDetail}
         onClose={() => setSelectedArticleForDetail(null)}
+        onDeleteArticle={currentJournalist ? (art) => handleDeleteArticle(art.id, art.title) : undefined}
       />
 
-      <PdfViewerModal
-        newspaper={selectedPdfForViewer}
-        onClose={() => setSelectedPdfForViewer(null)}
-      />
+      {/* Modal de Confirmação para Apagar Matéria */}
+      {articleToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 text-center space-y-5 animate-in fade-in zoom-in-95 duration-150">
+            <div className="w-16 h-16 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mx-auto border border-red-100 shadow-sm">
+              <Trash2 className="w-8 h-8" />
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="text-xl font-serif font-bold text-slate-900">
+                Apagar Notícia?
+              </h4>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Tem certeza que deseja apagar a matéria <strong className="text-slate-900">"{articleToDelete.title}"</strong>? Esta ação não pode ser desfeita e a notícia será removida imediatamente da cobertura oficial.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setArticleToDelete(null)}
+                className="flex-1 py-3 px-4 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                onClick={confirmDeleteArticle}
+                className="flex-1 py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-lg shadow-red-600/25 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Sim, apagar notícia</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

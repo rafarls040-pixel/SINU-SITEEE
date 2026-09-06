@@ -1,36 +1,38 @@
 import { NewsArticle, PdfNewspaper, JournalistUser } from '../types';
 
 const STORAGE_KEY_ARTICLES = 'sinu_news_articles_sinuxx_v1';
-const STORAGE_KEY_PDFS = 'sinu_pdf_newspapers_v1';
+const STORAGE_KEY_PDFS = 'sinu_pdf_newspapers_v2';
 const STORAGE_KEY_SESSION = 'sinu_journalist_session_v1';
 
 // Sem notícias postadas por padrão (a serem adicionadas pelos jornalistas)
 const DEFAULT_ARTICLES: NewsArticle[] = [];
 
-// Seed data para Jornais em formato PDF
+// Seed data para Jornais em formato PDF das duas editoras
 const DEFAULT_PDF_NEWSPAPERS: PdfNewspaper[] = [
   {
     id: 'pdf-01',
-    title: 'Gazeta SINU XX • Edição de Abertura & Panorama Diplomático',
-    edition: 'Edição Especial nº 01',
+    title: 'Edição Especial • Panorama e Ordem Internacional',
+    edition: '1ª Edição Oficial',
     date: '28 de Julho de 2026',
-    description: 'Primeira edição oficial da Gazeta da XX SINU. Cobertura completa da cerimônia de abertura, discursos dos líderes e guia das principais agendas em debate nos 10 comitês.',
+    description: 'Edição inaugural cobrindo os pronunciamentos de chefes de Estado, soberania nacional e análise estratégica das resoluções em debate.',
     pdfUrl: 'https://drive.google.com/file/d/1zxEIGEIt-nA4AUgkvGgFZ1XZTL6IWQCR/view?usp=sharing',
-    fileName: 'Gazeta_SINU_XX_Edicao_01.pdf',
+    fileName: 'O_Ufanista_Edicao_01.pdf',
     coverImageUrl: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=800&q=80',
-    author: 'Corpo Editorial Gazeta SINU',
+    author: 'Redação O Ufanista',
+    publisher: 'O UFANISTA',
     pageCount: 8
   },
   {
     id: 'pdf-02',
-    title: 'Dossiê da Imprensa • Análise Geopolítica & Bastidores dos Comitês',
-    edition: 'Caderno Especial de Análise',
+    title: 'Vozes dos Bastidores • Direitos, Crises e Sociedade Civil',
+    edition: '1ª Edição Oficial',
     date: '28 de Julho de 2026',
-    description: 'Caderno investigativo com entrevistas exclusivas com a Secretaria Geral, perfis de delegações de destaque e infográficos sobre os eixos temáticos da simulação.',
+    description: 'Cobertura aprofundada dos impactos sociais, minorias, debates nos corredores diplomáticos e reivindicações dos comitês da simulação.',
     pdfUrl: 'https://drive.google.com/file/d/1zxEIGEIt-nA4AUgkvGgFZ1XZTL6IWQCR/view?usp=sharing',
-    fileName: 'Dossie_Imprensa_SINU_XX.pdf',
+    fileName: 'Sans_Culottes_Edicao_01.pdf',
     coverImageUrl: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80',
-    author: 'Secretaria de Comunicação & Imprensa',
+    author: 'Redação Sans Culottes',
+    publisher: 'SANS CULOTTES',
     pageCount: 12
   }
 ];
@@ -119,7 +121,7 @@ export const newsService = {
 
   deleteArticle(id: string): boolean {
     const articles = this.getArticles();
-    const filtered = articles.filter(a => a.id !== id);
+    const filtered = articles.filter(a => String(a.id) !== String(id));
     localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(filtered));
     return true;
   },
@@ -127,6 +129,9 @@ export const newsService = {
   // Jornais em PDF
   getPdfNewspapers(): PdfNewspaper[] {
     try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.removeItem('sinu_pdf_newspapers_v1');
+      }
       const stored = localStorage.getItem(STORAGE_KEY_PDFS);
       if (!stored) {
         localStorage.setItem(STORAGE_KEY_PDFS, JSON.stringify(DEFAULT_PDFNEWSPAPERS_FALLBACK()));
@@ -186,7 +191,7 @@ export const newsService = {
 
   loginJournalist(loginInput: string, passwordInput?: string): { success: boolean; user?: JournalistUser; error?: string } {
     const cleanLogin = (loginInput || '').trim();
-    const cleanPass = (passwordInput || '').trim().toLowerCase();
+    const cleanPass = (passwordInput || '').trim();
 
     if (!cleanLogin) {
       return { success: false, error: 'Por favor, informe seu login de imprensa.' };
@@ -195,32 +200,33 @@ export const newsService = {
       return { success: false, error: 'Por favor, digite a senha.' };
     }
 
-    // Senhas válidas para a equipe de jornalistas e imprensa da SINU
-    const validPasswords = ['sinu2026', 'sinuxx', '2026', 'imprensa', 'jornalista'];
-    const isPasswordValid = validPasswords.includes(cleanPass);
+    const isLoginValid = cleanLogin.toLowerCase() === 'comite-de-imprensa' || cleanLogin === 'COMITE-de-IMPRENSA';
+    const isPasswordValid = cleanPass === 'SINUXX2o' || cleanPass.toLowerCase() === 'sinuxx2o';
 
-    if (isPasswordValid) {
-      const displayName = cleanLogin.includes('@') 
-        ? cleanLogin.split('@')[0].replace(/[._-]/g, ' ') 
-        : cleanLogin;
-      const formattedName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
-
-      const user: JournalistUser = {
-        id: `usr-${Date.now()}`,
-        name: formattedName.length > 2 ? formattedName : 'Equipe de Imprensa',
-        email: cleanLogin.includes('@') ? cleanLogin : `${cleanLogin.toLowerCase().replace(/\s+/g, '')}@sinu.org`,
-        role: 'Jornalista',
-        badgeCode: 'SINU-XX-PRESS',
-        avatar: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/icone+dos+comites/CI.png'
+    if (!isLoginValid) {
+      return { 
+        success: false, 
+        error: 'Login incorreto. Utilize o login oficial da imprensa (COMITE-de-IMPRENSA).' 
       };
-      this.setJournalistSession(user);
-      return { success: true, user };
     }
 
-    return { 
-      success: false, 
-      error: 'Senha incorreta. Verifique suas credenciais de imprensa.' 
+    if (!isPasswordValid) {
+      return { 
+        success: false, 
+        error: 'Senha incorreta. Verifique suas credenciais de imprensa.' 
+      };
+    }
+
+    const user: JournalistUser = {
+      id: `usr-ci-${Date.now()}`,
+      name: 'Comitê de Imprensa',
+      email: 'comite-de-imprensa@sinu.org',
+      role: 'Jornalista',
+      badgeCode: 'SINU-XX-PRESS',
+      avatar: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/icone+dos+comites/CI.png'
     };
+    this.setJournalistSession(user);
+    return { success: true, user };
   },
 
   logoutJournalist(): void {

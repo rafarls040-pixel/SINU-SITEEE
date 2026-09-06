@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Calendar, User, Clock, Share2, Check, Printer, Bookmark } from 'lucide-react';
+import { X, Calendar, User, Clock, Share2, Check, Printer, Bookmark, Trash2 } from 'lucide-react';
 import { NewsArticle } from '../../types';
 
 interface ArticleDetailModalProps {
   article: NewsArticle | null;
   onClose: () => void;
+  onDeleteArticle?: (article: NewsArticle) => void;
 }
 
 export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
   article,
-  onClose
+  onClose,
+  onDeleteArticle
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -77,7 +79,16 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
       >
         {/* Sticky Top Bar with Actions */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white/95 backdrop-blur-md sticky top-0 z-20">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            {article.publisher && (
+              <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-sm ${
+                article.publisher === 'O UFANISTA'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-[#7a1828] text-white'
+              }`}>
+                {article.publisher}
+              </span>
+            )}
             <span className="px-3 py-1 bg-[#03005c]/10 text-[#03005c] rounded-full text-xs font-bold uppercase tracking-wider">
               {article.category}
             </span>
@@ -89,6 +100,17 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
+            {onDeleteArticle && (
+              <button
+                onClick={() => onDeleteArticle(article)}
+                className="p-2 rounded-xl text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors flex items-center gap-1.5 text-xs font-bold cursor-pointer"
+                title="Excluir esta notícia"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span className="hidden sm:inline">Excluir</span>
+              </button>
+            )}
+
             <button
               onClick={handleShare}
               className="p-2 rounded-xl text-slate-500 hover:text-[#03005c] hover:bg-slate-100 transition-colors flex items-center gap-1.5 text-xs font-medium cursor-pointer"

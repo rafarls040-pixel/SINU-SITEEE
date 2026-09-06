@@ -42,9 +42,20 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
               <FileText className="w-5 h-5" />
             </div>
             <div className="truncate">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#fecc00] block truncate">
-                {newspaper.edition} • Gazeta Oficial SINU
-              </span>
+              <div className="flex items-center gap-2 mb-0.5">
+                {newspaper.publisher && (
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${
+                    newspaper.publisher === 'O UFANISTA'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-[#7a1828] text-white'
+                  }`}>
+                    {newspaper.publisher}
+                  </span>
+                )}
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#fecc00] truncate">
+                  {newspaper.edition} • Gazeta Oficial SINU
+                </span>
+              </div>
               <h2 className="text-base sm:text-lg font-serif font-bold text-white truncate">
                 {newspaper.title}
               </h2>
