@@ -91,16 +91,16 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
       return;
     }
 
-    const defaultTags = newsCategory === 'Comitês' && newsCommittee
+    const defaultTags = newsCommittee 
       ? [newsCategory, newsCommittee]
       : [newsCategory, 'SINU XX'];
 
     newsService.saveArticle({
       id: editingArticleId || undefined,
       title: newsTitle.trim(),
-      subtitle: newsSubtitle.trim(),
+      subtitle: newsSubtitle.trim() || undefined,
       category: newsCategory,
-      committee: newsCategory === 'Comitês' ? newsCommittee : undefined,
+      committee: newsCommittee || undefined,
       publisher: newsPublisher,
       author: newsAuthor.trim() || user.name,
       authorRole: newsAuthorRole.trim() || user.role,
@@ -423,30 +423,28 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
                 </select>
               </div>
 
-              {/* Committee */}
-              {newsCategory === 'Comitês' && (
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                    Comitê Vinculado *
-                  </label>
-                  <select
-                    value={newsCommittee}
-                    onChange={(e) => setNewsCommittee(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-[#03005c] focus:ring-2 focus:ring-[#03005c]/10 transition-all bg-white"
-                  >
-                    <option value="CSNU">CSNU - Conselho de Segurança</option>
-                    <option value="CSH">CSH - Histórico (Crise dos Mísseis)</option>
-                    <option value="UNODC">UNODC - Drogas e Crime</option>
-                    <option value="CDH">CDH - Direitos Humanos</option>
-                    <option value="UNIFEM">UNIFEM - Mulheres na Liderança</option>
-                    <option value="TO">TO - Tribunal Oral</option>
-                    <option value="PNUMA">PNUMA - Meio Ambiente</option>
-                    <option value="OPEP+">OPEP+ - Petróleo e Energia</option>
-                    <option value="CN">CN - Congresso Nacional</option>
-                    <option value="CI">CI - Comitê de Imprensa</option>
-                  </select>
-                </div>
-              )}
+              {/* Committee (Apenas as siglas) */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                  Comitê *
+                </label>
+                <select
+                  value={newsCommittee}
+                  onChange={(e) => setNewsCommittee(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-800 text-sm font-bold focus:outline-none focus:border-[#03005c] focus:ring-2 focus:ring-[#03005c]/10 transition-all bg-white"
+                >
+                  <option value="CSNU">CSNU</option>
+                  <option value="CSH">CSH</option>
+                  <option value="UNODC">UNODC</option>
+                  <option value="CDH">CDH</option>
+                  <option value="UNIFEM">UNIFEM</option>
+                  <option value="TO">TO</option>
+                  <option value="PNUMA">PNUMA</option>
+                  <option value="OPEP+">OPEP+</option>
+                  <option value="CN">CN</option>
+                  <option value="CI">CI</option>
+                </select>
+              </div>
 
               {/* Author */}
               <div>
@@ -472,7 +470,7 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
                 type="text"
                 value={newsTitle}
                 onChange={(e) => setNewsTitle(e.target.value)}
-                placeholder="ex: Disputa acalorada no CSNU define novas sanções sobre segurança regional"
+                placeholder="ex: Delegações chegam a acordo histórico durante as negociações da tarde"
                 required
                 className="w-full px-4 py-3.5 rounded-xl border border-slate-200 text-slate-900 font-serif font-bold text-base sm:text-lg focus:outline-none focus:border-[#03005c] focus:ring-2 focus:ring-[#03005c]/10 transition-all placeholder:font-sans placeholder:font-normal placeholder:text-slate-400"
               />
