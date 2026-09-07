@@ -62,12 +62,16 @@ export const PressNews: React.FC = () => {
       setSelectedArticleForDetail(null);
     }
     setArticleToDelete(null);
-    loadData();
   };
 
   useEffect(() => {
     document.title = 'Notícias SINUXX';
-    loadData();
+    setCurrentJournalist(newsService.getJournalistSession());
+
+    // Subscribe to real-time global news synchronization across all devices
+    const unsubscribe = newsService.subscribeArticles((latestArticles) => {
+      setArticles(latestArticles);
+    });
 
     // If query param ?action=login is present
     if (searchParams.get('action') === 'login') {
@@ -76,6 +80,8 @@ export const PressNews: React.FC = () => {
     if (searchParams.get('tab') === 'dashboard') {
       setActiveMainTab('dashboard');
     }
+
+    return () => unsubscribe();
   }, [searchParams]);
 
   const handleLogout = () => {

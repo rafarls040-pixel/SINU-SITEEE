@@ -1,4 +1,12 @@
 import { NewsArticle, PdfNewspaper, JournalistUser } from '../types';
+import { 
+  collection, 
+  doc, 
+  setDoc, 
+  deleteDoc, 
+  onSnapshot
+} from 'firebase/firestore';
+import { db } from './firebase';
 
 const STORAGE_KEY_ARTICLES = 'sinu_news_articles_sinuxx_v1';
 const STORAGE_KEY_PDFS = 'sinu_pdf_newspapers_v2';
@@ -37,92 +45,187 @@ const DEFAULT_PDF_NEWSPAPERS: PdfNewspaper[] = [
   }
 ];
 
-// Contas de Jornalistas padrão para a equipe de imprensa
-const DEFAULT_JOURNALISTS: { [email: string]: { pass: string; user: JournalistUser } } = {
-  'imprensa@sinu.org': {
-    pass: 'sinu2026',
-    user: {
-      id: 'usr-01',
-      name: 'Redação Geral SINU',
-      email: 'imprensa@sinu.org',
-      role: 'Editor-Chefe',
-      badgeCode: 'SINU-PRESS-001',
-      avatar: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/icone+dos+comites/CI.png'
+// Helper to get initial articles from localStorage cache
+function getInitialCachedArticles(): NewsArticle[] {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const stored = localStorage.getItem(STORAGE_KEY_ARTICLES);
+      if (stored) {
+        return JSON.parse(stored);
+      }
     }
-  },
-  'jornalista@sinu.org': {
-    pass: 'imprensa123',
-    user: {
-      id: 'usr-02',
-      name: 'Equipe de Jornalistas SINU',
-      email: 'jornalista@sinu.org',
-      role: 'Jornalista',
-      badgeCode: 'SINU-PRESS-002',
-      avatar: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/icone+dos+comites/CI.png'
+  } catch {}
+  return [];
+}
+
+// In-memory real-time state
+let currentArticles: NewsArticle[] = getInitialCachedArticles();
+const articleListeners = new Set<(articles: NewsArticle[]) => void>();
+
+// Subscribe to Firestore collection for global real-time synchronization across all devices
+try {
+  const articlesCol = collection(db, 'articles');
+  onSnapshot(
+    articlesCol,
+    (snapshot) => {
+      const remoteArticles: NewsArticle[] = [];
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        remoteArticles.push({
+          id: docSnap.id,
+          title: data.title || '',
+          subtitle: data.subtitle || undefined,
+          content: data.content || '',
+          category: data.category || 'Geral',
+          committee: data.committee || undefined,
+          publisher: data.publisher || 'O UFANISTA',
+          author: data.author || 'Equipe de Imprensa',
+          authorRole: data.authorRole || '',
+          imageUrl: data.imageUrl || '',
+          date: data.date || '',
+          time: data.time || '',
+          readingTime: data.readingTime || '',
+          tags: Array.isArray(data.tags) ? data.tags : [],
+          isPinned: Boolean(data.isPinned),
+          ...(typeof data.createdAt === 'number' ? { createdAt: data.createdAt } : {})
+        } as NewsArticle);
+      });
+
+      // Sort: newest first based on createdAt or ID
+      remoteArticles.sort((a, b) => {
+        const aTime = (a as any).createdAt || 0;
+        const bTime = (b as any).createdAt || 0;
+        if (aTime !== bTime) return bTime - aTime;
+        return b.id.localeCompare(a.id);
+      });
+
+      currentArticles = remoteArticles;
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(currentArticles));
+        }
+      } catch {}
+
+      // Notify all UI subscribers across the app
+      articleListeners.forEach((listener) => {
+        try {
+          listener([...currentArticles]);
+        } catch (e) {
+          console.error('Error notifying article listener:', e);
+        }
+      });
+    },
+    (error) => {
+      console.warn('Firestore real-time subscription error:', error);
     }
-  },
-  'editor@sinu.org': {
-    pass: 'editor2026',
-    user: {
-      id: 'usr-03',
-      name: 'Editoria da Gazeta',
-      email: 'editor@sinu.org',
-      role: 'Coordenador de Imprensa',
-      badgeCode: 'SINU-PRESS-003',
-      avatar: 'https://sinu-csl-site.s3.sa-east-1.amazonaws.com/icone+dos+comites/CI.png'
-    }
-  }
-};
+  );
+} catch (err) {
+  console.warn('Could not initialize Firestore snapshot listener:', err);
+}
 
 export const newsService = {
-  // Notícias
+  // Subscribe to real-time updates across all devices
+  subscribeArticles(listener: (articles: NewsArticle[]) => void): () => void {
+    articleListeners.add(listener);
+    // Immediately notify with current cache
+    listener([...currentArticles]);
+    return () => {
+      articleListeners.delete(listener);
+    };
+  },
+
+  // Get current articles synchronously (from in-memory cache)
   getArticles(): NewsArticle[] {
-    try {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        localStorage.removeItem('sinu_news_articles_v1');
-        localStorage.removeItem('sinu_news_articles_v2');
-      }
-      const stored = localStorage.getItem(STORAGE_KEY_ARTICLES);
-      if (!stored) {
-        localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify([]));
-        return [];
-      }
-      return JSON.parse(stored);
-    } catch {
-      return [];
-    }
+    return [...currentArticles];
   },
 
   getArticleById(id: string): NewsArticle | undefined {
-    const articles = this.getArticles();
-    return articles.find(a => a.id === id);
+    return currentArticles.find((a) => a.id === id);
   },
 
+  // Save Article (persists globally to Cloud Firestore and updates local state optimistically)
   saveArticle(data: Omit<NewsArticle, 'id'> & { id?: string }): NewsArticle {
-    const articles = this.getArticles();
     const id = data.id || `art-${Date.now()}`;
+    const now = Date.now();
+    const dateFormatted = data.date || new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+    const timeFormatted = data.time || new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
     const article: NewsArticle = {
       ...data,
       id,
-      date: data.date || new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }),
-      time: data.time || new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+      date: dateFormatted,
+      time: timeFormatted,
+      ...(data as any).createdAt ? { createdAt: (data as any).createdAt } : { createdAt: now }
     };
 
-    const index = articles.findIndex(a => a.id === id);
+    // Optimistic local update
+    const index = currentArticles.findIndex((a) => a.id === id);
     if (index >= 0) {
-      articles[index] = article;
+      currentArticles[index] = article;
     } else {
-      articles.unshift(article); // Adiciona no topo
+      currentArticles.unshift(article);
     }
 
-    localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(articles));
+    try {
+      localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(currentArticles));
+    } catch {}
+
+    articleListeners.forEach((listener) => {
+      try {
+        listener([...currentArticles]);
+      } catch {}
+    });
+
+    // Cloud Firestore synchronization (sanitized without undefined)
+    const firestoreData: Record<string, any> = {
+      title: article.title,
+      content: article.content,
+      category: article.category || 'Geral',
+      publisher: article.publisher || 'O UFANISTA',
+      author: article.author || 'Imprensa SINU',
+      authorRole: article.authorRole || '',
+      imageUrl: article.imageUrl || '',
+      date: article.date,
+      time: article.time || '',
+      readingTime: article.readingTime || '1 min de leitura',
+      tags: article.tags || [article.category, 'SINU XX'],
+      isPinned: Boolean(article.isPinned),
+      createdAt: (article as any).createdAt || now
+    };
+
+    if (article.subtitle) {
+      firestoreData.subtitle = article.subtitle;
+    }
+    if (article.committee) {
+      firestoreData.committee = article.committee;
+    }
+
+    setDoc(doc(db, 'articles', id), firestoreData, { merge: true }).catch((err) => {
+      console.error('Failed to sync article to Cloud Firestore:', err);
+    });
+
     return article;
   },
 
+  // Delete Article (removes from Cloud Firestore and local state globally)
   deleteArticle(id: string): boolean {
-    const articles = this.getArticles();
-    const filtered = articles.filter(a => String(a.id) !== String(id));
-    localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(filtered));
+    // Optimistic local update
+    currentArticles = currentArticles.filter((a) => String(a.id) !== String(id));
+    try {
+      localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(currentArticles));
+    } catch {}
+
+    articleListeners.forEach((listener) => {
+      try {
+        listener([...currentArticles]);
+      } catch {}
+    });
+
+    // Delete in Cloud Firestore
+    deleteDoc(doc(db, 'articles', id)).catch((err) => {
+      console.error('Failed to delete article from Cloud Firestore:', err);
+    });
+
     return true;
   },
 
@@ -134,12 +237,12 @@ export const newsService = {
       }
       const stored = localStorage.getItem(STORAGE_KEY_PDFS);
       if (!stored) {
-        localStorage.setItem(STORAGE_KEY_PDFS, JSON.stringify(DEFAULT_PDFNEWSPAPERS_FALLBACK()));
-        return DEFAULT_PDFNEWSPAPERS_FALLBACK();
+        localStorage.setItem(STORAGE_KEY_PDFS, JSON.stringify(DEFAULT_PDF_NEWSPAPERS));
+        return DEFAULT_PDF_NEWSPAPERS;
       }
       return JSON.parse(stored);
     } catch {
-      return DEFAULT_PDFNEWSPAPERS_FALLBACK();
+      return DEFAULT_PDF_NEWSPAPERS;
     }
   },
 
@@ -152,7 +255,7 @@ export const newsService = {
       date: data.date || new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
     };
 
-    const index = pdfs.findIndex(p => p.id === id);
+    const index = pdfs.findIndex((p) => p.id === id);
     if (index >= 0) {
       pdfs[index] = newspaper;
     } else {
@@ -165,7 +268,7 @@ export const newsService = {
 
   deletePdfNewspaper(id: string): boolean {
     const pdfs = this.getPdfNewspapers();
-    const filtered = pdfs.filter(p => p.id !== id);
+    const filtered = pdfs.filter((p) => p.id !== id);
     localStorage.setItem(STORAGE_KEY_PDFS, JSON.stringify(filtered));
     return true;
   },
@@ -235,8 +338,14 @@ export const newsService = {
 
   // Reset e Backup
   resetToDefaults(): void {
+    // Delete all remote articles
+    currentArticles.forEach((art) => {
+      deleteDoc(doc(db, 'articles', art.id)).catch(() => {});
+    });
+    currentArticles = [];
     localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(DEFAULT_ARTICLES));
     localStorage.setItem(STORAGE_KEY_PDFS, JSON.stringify(DEFAULT_PDF_NEWSPAPERS));
+    articleListeners.forEach((cb) => cb([]));
   },
 
   exportBackup(): string {
@@ -251,7 +360,9 @@ export const newsService = {
     try {
       const parsed = JSON.parse(jsonString);
       if (Array.isArray(parsed.articles)) {
-        localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(parsed.articles));
+        parsed.articles.forEach((art: NewsArticle) => {
+          this.saveArticle(art);
+        });
       }
       if (Array.isArray(parsed.pdfs)) {
         localStorage.setItem(STORAGE_KEY_PDFS, JSON.stringify(parsed.pdfs));
@@ -262,7 +373,3 @@ export const newsService = {
     }
   }
 };
-
-function DEFAULT_PDFNEWSPAPERS_FALLBACK(): PdfNewspaper[] {
-  return DEFAULT_PDF_NEWSPAPERS;
-}

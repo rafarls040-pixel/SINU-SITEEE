@@ -17,8 +17,10 @@ export const HomeNewsSection: React.FC = () => {
   const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null);
 
   useEffect(() => {
-    const loadedArticles = newsService.getArticles();
-    setArticles(loadedArticles.slice(0, 6));
+    const unsubscribe = newsService.subscribeArticles((loadedArticles) => {
+      setArticles(loadedArticles.slice(0, 6));
+    });
+    return () => unsubscribe();
   }, []);
 
   return (

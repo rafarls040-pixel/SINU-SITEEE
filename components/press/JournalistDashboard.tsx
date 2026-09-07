@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, 
@@ -45,6 +45,14 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
   // In-app confirmation dialog states (avoids blocked window.confirm in iframe)
   const [articleToDelete, setArticleToDelete] = useState<{ id: string; title: string } | null>(null);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
+  const [articles, setArticles] = useState<NewsArticle[]>(() => newsService.getArticles());
+
+  useEffect(() => {
+    const unsubscribe = newsService.subscribeArticles((latestArticles) => {
+      setArticles(latestArticles);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Form states for News Article
   const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
@@ -208,8 +216,6 @@ export const JournalistDashboard: React.FC<JournalistDashboardProps> = ({
     };
     reader.readAsText(file);
   };
-
-  const articles = newsService.getArticles();
 
   return (
     <div className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">

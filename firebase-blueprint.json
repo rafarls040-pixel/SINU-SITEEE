@@ -1,0 +1,32 @@
+{
+  "entities": {
+    "Article": {
+      "title": "Article",
+      "description": "A news article published by the press committee in SINU",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 500 },
+        "subtitle": { "type": "string", "maxLength": 1000 },
+        "category": { "type": "string", "maxLength": 100 },
+        "committee": { "type": "string", "maxLength": 50 },
+        "publisher": { "type": "string", "maxLength": 100 },
+        "author": { "type": "string", "maxLength": 200 },
+        "authorRole": { "type": "string", "maxLength": 200 },
+        "imageUrl": { "type": "string", "maxLength": 3000000 },
+        "content": { "type": "string", "maxLength": 100000 },
+        "tags": { "type": "array" },
+        "isPinned": { "type": "boolean" },
+        "date": { "type": "string", "maxLength": 100 },
+        "time": { "type": "string", "maxLength": 100 },
+        "readingTime": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["title", "category", "publisher", "content"]
+    }
+  },
+  "firestore": {
+    "/articles/{articleId}": {
+      "$ref": "#/entities/Article"
+    }
+  }
+}
