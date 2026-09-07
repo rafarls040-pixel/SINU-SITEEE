@@ -22,6 +22,10 @@ service cloud.firestore {
         && (!('tags' in data) || data.tags is list);
     }
 
+    match /test/{docId} {
+      allow read: if true;
+    }
+
     match /articles/{articleId} {
       allow read: if true;
       allow create: if isValidId(articleId) && isValidArticle(incoming());
